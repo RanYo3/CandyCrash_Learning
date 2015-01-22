@@ -3,7 +3,7 @@
 #include "Point.h"
 #include "Shape.h"
 
-#define MARGIN 3
+#define MARGIN 10
 
 class Cell
 {

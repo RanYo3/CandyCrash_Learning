@@ -29,11 +29,16 @@ private:
 	void InitData();
 	void InitCellSize();
 	void InitMatrix();
+	void InitShapeCollection();
 	void DeleteMatrix();
+	void DeleteShapeCollection();
 
 	void CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const;
 
+	Shape *RandomShape() const;
+
 	Cell ***m_Matrix;
+	Shape **m_ShapesCollection;
 	int m_Rows;
 	int m_Cols;
 	Point m_TopLeft;
