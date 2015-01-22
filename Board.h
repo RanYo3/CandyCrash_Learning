@@ -25,13 +25,18 @@ public:
 
 private:
 	void InitMatrix();
+	void InitShapeCollection();
 	void DeleteMatrix();
+	void DeleteShapeCollection();
 
 	void CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const;
+
+	Shape *RandomShape() const;
 
 	Cell ***m_Matrix;
 	int m_Rows;
 	int m_Cols;
 	Point m_TopLeft;
 	Point m_BottomRight;
+	Shape **m_ShapesCollection;
 };

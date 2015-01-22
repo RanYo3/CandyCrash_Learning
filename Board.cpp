@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Board.h"
 #include "Sh_Triangle.h"
+#include "Sh_Rectangle.h"
+#include "Sh_Diamond.h"
+#include "Sh_Ellipse.h"
+
 
 Board::Board(int matrixSize, const Point &topLeft, const Point &bottomRight)
 	: m_Rows(matrixSize), m_Cols(matrixSize), m_TopLeft(topLeft), m_BottomRight(bottomRight)
@@ -13,6 +17,7 @@ Board::~Board()
 	if (m_Matrix != NULL)
 	{
 		DeleteMatrix();
+		DeleteShapeCollection();
 	}
 }
 
@@ -86,10 +91,16 @@ void Board::Swap(const Point &index1, const Point &index2)
 
 void Board::InitMatrix()
 {
+	InitShapeCollection();
+
 	Point cellTopLeft;
 	Point cellBottomRight;
 
+	Shape *tempShape;
+
 	m_Matrix = new Cell**[m_Rows];
+
+	srand(static_cast<int>(time(0)));		//to generate different seed for Rand()
 
 	for (int i = 0; i < m_Rows; i++)
 	{
@@ -97,9 +108,25 @@ void Board::InitMatrix()
 		for (int j = 0; j < m_Cols; j++)
 		{
 			CalcCellLocation(i, j, cellTopLeft, cellBottomRight);
-			m_Matrix[i][j] = new Cell(new Sh_Triangle(cellTopLeft + MARGIN, cellBottomRight - MARGIN, BLACK), cellTopLeft, cellBottomRight);
+			tempShape = RandomShape();
+			tempShape->SetTopLeft(cellTopLeft + MARGIN);
+			tempShape->SetBottomRight(cellBottomRight - MARGIN);
+
+			m_Matrix[i][j] = new Cell(tempShape->Clone(), cellTopLeft, cellBottomRight);
+
+			delete tempShape;
 		}
 	}
+}
+
+void Board::InitShapeCollection()
+{
+	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
+
+	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle;
+	m_ShapesCollection[ST_Ellipse] = new Sh_Ellipse;
+	m_ShapesCollection[ST_Triangle] = new Sh_Triangle;
+	m_ShapesCollection[ST_Diamond] = new Sh_Diamond;
 }
 
 void Board::DeleteMatrix()
@@ -115,6 +142,15 @@ void Board::DeleteMatrix()
 	delete[] m_Matrix;
 }
 
+void Board::DeleteShapeCollection()
+{
+	for (int i = 0; i < NUM_OF_SHAPES; i++)
+		{
+			delete m_ShapesCollection[i];
+		}
+	delete[] m_ShapesCollection;
+}
+
 void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const
 {
 	double cellSizeX = double(m_BottomRight.GetX() - m_TopLeft.GetX()) / m_Cols;
@@ -125,4 +161,10 @@ void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) c
 
 	bottomRight.SetX(topLeft.GetX() + cellSizeX);
 	bottomRight.SetY(topLeft.GetY() + cellSizeY);
+}
+
+Shape *Board::RandomShape() const
+{
+	int rand_idx = rand() % NUM_OF_SHAPES;
+	return m_ShapesCollection[rand_idx]->Clone();
 }
