@@ -146,6 +146,9 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 {
 	Point *_poly      = shape->GetPolygon();
 	ShapeType sh_type = shape->GetType();
+	
+	CBrush shapeClr(shape->GetColor().GetColorRef());
+	CBrush *oldBrush = dc.SelectObject(&shapeClr);
 
 	if (sh_type == ST_Ellipse)
 	{
@@ -166,6 +169,8 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 		dc.Polygon(poly, polySize);
 		delete[] poly;
 	}
+
+	dc.SelectObject(oldBrush);
 }
 
 void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const

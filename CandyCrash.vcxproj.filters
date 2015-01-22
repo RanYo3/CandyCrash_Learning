@@ -66,6 +66,12 @@
     <ClInclude Include="Sh_Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sh_Plus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sh_Minus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CandyCrash.cpp">
@@ -102,6 +108,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sh_Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sh_Plus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sh_Minus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

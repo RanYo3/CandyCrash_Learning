@@ -1,5 +1,7 @@
 #pragma once
 
+#include <WinGDI.h>
+
 //      Name           R    G    B
 //      ====          ===  ===  ===
 #define BLACK	Color(  0,   0,   0)
@@ -24,6 +26,8 @@ public:
 
 	bool operator==(const Color &other) const;
 	bool operator!=(const Color &other) const;
+
+	COLORREF GetColorRef() const;
 
 	void SetRGB(char r, char g, char b);
 

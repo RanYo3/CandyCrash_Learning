@@ -107,6 +107,8 @@
     <ClInclude Include="Sh_Diamond.h" />
     <ClInclude Include="Sh_Ellipse.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Sh_Minus.h" />
+    <ClInclude Include="Sh_Plus.h" />
     <ClInclude Include="Sh_Rectangle.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shape.h" />
@@ -123,6 +125,8 @@
     <ClCompile Include="Sh_Diamond.cpp" />
     <ClCompile Include="Sh_Ellipse.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Sh_Minus.cpp" />
+    <ClCompile Include="Sh_Plus.cpp" />
     <ClCompile Include="Sh_Rectangle.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp">
