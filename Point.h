@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atltypes.h>
+
 class Point
 {
 public:
@@ -7,6 +9,7 @@ public:
 	~Point();
 
 	Point(int x, int y);
+	Point(const CPoint &cpoint);
 	Point(const Point &other);
 	const Point &operator=(const Point &other);
 

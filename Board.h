@@ -20,10 +20,14 @@ public:
 	int GetCols() const;
 
 	Cell *GetCell(int row, int col) const;
+	Cell *GetCell(const Point &index) const;
+	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
 
 	void Swap(const Point &p1, const Point &p2);
 
 private:
+	void InitData();
+	void InitCellSize();
 	void InitMatrix();
 	void DeleteMatrix();
 
@@ -34,4 +38,6 @@ private:
 	int m_Cols;
 	Point m_TopLeft;
 	Point m_BottomRight;
+	double m_CellSizeX;
+	double m_CellSizeY;
 };

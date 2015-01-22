@@ -5,7 +5,7 @@
 Board::Board(int matrixSize, const Point &topLeft, const Point &bottomRight)
 	: m_Rows(matrixSize), m_Cols(matrixSize), m_TopLeft(topLeft), m_BottomRight(bottomRight)
 {
-	InitMatrix();
+	InitData();
 }
 
 Board::~Board()
@@ -19,14 +19,14 @@ Board::~Board()
 Board::Board(int rows, int cols)
 	: m_Rows(rows), m_Cols(cols)
 {
-	InitMatrix();
+	InitData();
 }
 
 Board::Board(const Board &other)
 {
 	m_Rows = other.m_Rows;
 	m_Cols = other.m_Cols;
-	InitMatrix();
+	InitData();
 }
 
 const Board &Board::operator=(const Board &other)
@@ -40,7 +40,7 @@ const Board &Board::operator=(const Board &other)
 
 		m_Rows = other.m_Rows;
 		m_Cols = other.m_Cols;
-		InitMatrix();
+		InitData();
 	}
 
 	return *this;
@@ -59,6 +59,27 @@ int Board::GetCols() const
 Cell *Board::GetCell(int row, int col) const
 {
 	return m_Matrix[row][col];
+}
+
+Cell *Board::GetCell(const Point &index) const
+{
+	return m_Matrix[index.GetY()][index.GetX()];
+}
+
+bool Board::GetCellIndex(const Point &locationInWindow, Point &index) const
+{
+	int indexI = (int)((double)(locationInWindow.GetY() - m_TopLeft.GetY()) / m_CellSizeY);
+	int indexJ = (int)((double)(locationInWindow.GetX() - m_TopLeft.GetX()) / m_CellSizeX);
+
+	if (indexI >= 0 && indexI < m_Rows && 
+		indexJ >= 0 && indexJ < m_Cols)
+	{
+		index.SetX(indexI);
+		index.SetY(indexJ);
+		return true;
+	}
+
+	return false;
 }
 
 void Board::Swap(const Point &index1, const Point &index2)
@@ -82,6 +103,18 @@ void Board::Swap(const Point &index1, const Point &index2)
 	pTemp = m_Matrix[index1.GetY()][index1.GetX()]->GetBottomRight();
 	m_Matrix[index1.GetY()][index1.GetX()]->SetBottomRight(m_Matrix[index2.GetY()][index2.GetX()]->GetBottomRight());
 	m_Matrix[index2.GetY()][index2.GetX()]->SetBottomRight(pTemp);
+}
+
+void Board::InitData()
+{
+	InitCellSize();
+	InitMatrix();
+}
+
+void Board::InitCellSize()
+{
+	m_CellSizeX = double(m_BottomRight.GetX() - m_TopLeft.GetX()) / m_Cols;
+	m_CellSizeY = double(m_BottomRight.GetY() - m_TopLeft.GetY()) / m_Rows;
 }
 
 void Board::InitMatrix()
@@ -117,12 +150,9 @@ void Board::DeleteMatrix()
 
 void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const
 {
-	double cellSizeX = double(m_BottomRight.GetX() - m_TopLeft.GetX()) / m_Cols;
-	double cellSizeY = double(m_BottomRight.GetY() - m_TopLeft.GetY()) / m_Rows;
+	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * i));
+	topLeft.SetY(m_TopLeft.GetY() + (int)(m_CellSizeY * j));
 
-	topLeft.SetX(m_TopLeft.GetX() + cellSizeX * i);
-	topLeft.SetY(m_TopLeft.GetY() + cellSizeY * j);
-
-	bottomRight.SetX(topLeft.GetX() + cellSizeX);
-	bottomRight.SetY(topLeft.GetY() + cellSizeY);
+	bottomRight.SetX(topLeft.GetX() + (int)m_CellSizeX);
+	bottomRight.SetY(topLeft.GetY() + (int)m_CellSizeY);
 }

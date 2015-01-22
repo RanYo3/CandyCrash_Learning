@@ -18,6 +18,7 @@ public:
 	Shape *GetShape() const;
 	const Point &GetTopLeft() const;
 	const Point &GetBottomRight() const;
+	bool IsSelected() const;
 
 	void SetTopLeft(const Point &topLeft);
 	void SetBottomRight(const Point &bottomRight);

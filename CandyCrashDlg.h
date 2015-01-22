@@ -6,6 +6,8 @@
 
 #include "Board.h"
 
+#define NULL_POINT Point(-1, -1)
+
 // CCandyCrashDlg dialog
 class CCandyCrashDlg : public CDialogEx
 {
@@ -22,7 +24,12 @@ public:
 
 private:
 	Board *m_Board;
-
+	CPen *m_RegularPen;
+	CPen *m_SelectedPen;
+	Point m_FirstCell;
+	
+	void PaintShape(Shape *shape, CPaintDC &dc) const;
+	void PaintCell(Cell *cell, CPaintDC &dc) const;
 	void PaintBoard(CPaintDC &dc) const;
 
 // Implementation
@@ -35,4 +42,6 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

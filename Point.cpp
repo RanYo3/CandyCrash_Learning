@@ -15,6 +15,12 @@ Point::Point(int x, int y)
 {
 }
 
+Point::Point(const CPoint &cpoint)
+{
+	m_X = cpoint.x;
+	m_Y = cpoint.y;
+}
+
 Point::Point(const Point &other)
 {
 	m_X = other.m_X;

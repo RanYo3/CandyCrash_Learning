@@ -56,17 +56,27 @@ END_MESSAGE_MAP()
 
 
 CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CCandyCrashDlg::IDD, pParent)
+	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_FirstCell(NULL_POINT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_Board = new Board(3, Point(0, 0), Point(240, 240));
+	m_RegularPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
+	m_SelectedPen = new CPen(PS_SOLID, 1, RGB(0,0,255));
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
 {
 	if (m_Board != NULL)
 	{
-		delete[] m_Board;
+		delete m_Board;
+	}
+	if (m_RegularPen != NULL)
+	{
+		delete m_RegularPen;
+	}
+	if (m_SelectedPen != NULL)
+	{
+		delete m_SelectedPen;
 	}
 }
 
@@ -79,6 +89,7 @@ BEGIN_MESSAGE_MAP(CCandyCrashDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -131,7 +142,7 @@ void CCandyCrashDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-void PaintShape(Shape *shape, CPaintDC &dc)
+void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 {
 	Point *_poly      = shape->GetPolygon();
 	ShapeType sh_type = shape->GetType();
@@ -157,12 +168,21 @@ void PaintShape(Shape *shape, CPaintDC &dc)
 	}
 }
 
-void PaintCell(Cell *cell, CPaintDC &dc)
+void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const
 {
 	Point topLeft = cell->GetTopLeft();
 	Point bottomRight = cell->GetBottomRight();
 
-	dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+	if (cell->IsSelected())
+	{
+		dc.SelectObject(m_SelectedPen);
+		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+		dc.SelectObject(m_RegularPen);
+	}
+	else
+	{
+		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+	}
 
 	PaintShape(cell->GetShape(), dc);
 }
@@ -210,7 +230,8 @@ void CCandyCrashDlg::OnPaint()
 	else
 	{
 		CPaintDC dc(this);
-
+		
+		dc.SelectObject(m_RegularPen);
 		PaintBoard(dc);
 
 		//// Triangle
@@ -241,3 +262,26 @@ HCURSOR CCandyCrashDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	Point press(point);
+	Point index;
+
+	if (m_Board->GetCellIndex(press, index))
+	{
+		if (m_FirstCell != NULL_POINT)
+		{
+			m_Board->GetCell(m_FirstCell)->Select(false);
+		}
+
+		m_FirstCell = index;
+		m_Board->GetCell(m_FirstCell)->Select(true);
+	}
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+
+	Invalidate();
+}

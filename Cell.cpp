@@ -51,6 +51,11 @@ const Point &Cell::GetBottomRight() const
 	return m_BottomRight;
 }
 
+bool Cell::IsSelected() const
+{
+	return m_IsSelected;
+}
+
 void Cell::SetTopLeft(const Point &topLeft)
 {
 	m_TopLeft = topLeft;
