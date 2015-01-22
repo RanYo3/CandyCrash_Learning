@@ -56,12 +56,12 @@ END_MESSAGE_MAP()
 
 
 CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_FirstCell(NULL_POINT)
+	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_SelectedCell(NULL_POINT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_Board = new Board(3, Point(0, 0), Point(240, 240));
-	m_RegularPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
-	m_SelectedPen = new CPen(PS_SOLID, 1, RGB(0,0,255));
+	m_Board = new Board(7, Point(30, 30), Point(450, 380));
+	m_DefaultPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
+	m_SelectedPen = new CPen(PS_SOLID, 3, RGB(255,0,0));
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -70,9 +70,9 @@ CCandyCrashDlg::~CCandyCrashDlg()
 	{
 		delete m_Board;
 	}
-	if (m_RegularPen != NULL)
+	if (m_DefaultPen != NULL)
 	{
-		delete m_RegularPen;
+		delete m_DefaultPen;
 	}
 	if (m_SelectedPen != NULL)
 	{
@@ -177,7 +177,7 @@ void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const
 	{
 		dc.SelectObject(m_SelectedPen);
 		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
-		dc.SelectObject(m_RegularPen);
+		dc.SelectObject(m_DefaultPen);
 	}
 	else
 	{
@@ -231,7 +231,7 @@ void CCandyCrashDlg::OnPaint()
 	{
 		CPaintDC dc(this);
 		
-		dc.SelectObject(m_RegularPen);
+		dc.SelectObject(m_DefaultPen);
 		PaintBoard(dc);
 
 		//// Triangle
@@ -272,13 +272,20 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (m_Board->GetCellIndex(press, index))
 	{
-		if (m_FirstCell != NULL_POINT)
+		if (m_SelectedCell != NULL_POINT)
 		{
-			m_Board->GetCell(m_FirstCell)->Select(false);
+			m_Board->GetCell(m_SelectedCell)->Select(false);
 		}
 
-		m_FirstCell = index;
-		m_Board->GetCell(m_FirstCell)->Select(true);
+		if (index != m_SelectedCell)
+		{
+			m_SelectedCell = index;
+			m_Board->GetCell(m_SelectedCell)->Select(true);
+		}
+		else
+		{
+			m_SelectedCell = NULL_POINT;
+		}
 	}
 
 	CDialogEx::OnLButtonDown(nFlags, point);

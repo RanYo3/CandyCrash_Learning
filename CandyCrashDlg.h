@@ -24,9 +24,9 @@ public:
 
 private:
 	Board *m_Board;
-	CPen *m_RegularPen;
+	CPen *m_DefaultPen;
 	CPen *m_SelectedPen;
-	Point m_FirstCell;
+	Point m_SelectedCell;
 	
 	void PaintShape(Shape *shape, CPaintDC &dc) const;
 	void PaintCell(Cell *cell, CPaintDC &dc) const;
