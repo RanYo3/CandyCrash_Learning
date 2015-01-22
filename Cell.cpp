@@ -2,7 +2,7 @@
 #include "Cell.h"
 
 Cell::Cell()
-	: m_Shape(NULL), m_Location(), m_IsSelected(false)
+	: m_Shape(NULL), m_TopLeft(), m_BottomRight(), m_IsSelected(false)
 {
 }
 
@@ -10,15 +10,16 @@ Cell::~Cell()
 {
 }
 
-Cell::Cell(Shape *shape, Point location)
-	: m_Shape(shape), m_Location(location), m_IsSelected(false)
+Cell::Cell(Shape *shape, const Point &topLeft, const Point &bottomRight)
+	: m_Shape(shape), m_TopLeft(topLeft), m_BottomRight(bottomRight), m_IsSelected(false)
 {
 }
 
 Cell::Cell(const Cell &other)
 {
 	m_Shape = other.m_Shape->Clone();
-	m_Location = other.m_Location;
+	m_TopLeft = other.m_TopLeft;
+	m_BottomRight = other.m_BottomRight;
 	m_IsSelected = false;
 }
 
@@ -27,7 +28,8 @@ const Cell &Cell::operator=(const Cell &other)
 	if (&other != this)
 	{
 		m_Shape = other.m_Shape->Clone();
-		m_Location = other.m_Location;
+		m_TopLeft = other.m_TopLeft;
+		m_BottomRight = other.m_BottomRight;
 		m_IsSelected = false;
 	}
 
@@ -39,14 +41,24 @@ Shape *Cell::GetShape() const
 	return m_Shape;
 }
 
-const Point &Cell::GetLocation() const
+const Point &Cell::GetTopLeft() const
 {
-	return m_Location;
+	return m_TopLeft;
 }
 
-void Cell::SetLocation(const Point &location)
+const Point &Cell::GetBottomRight() const
 {
-	m_Location = location;
+	return m_BottomRight;
+}
+
+void Cell::SetTopLeft(const Point &topLeft)
+{
+	m_TopLeft = topLeft;
+}
+
+void Cell::SetBottomRight(const Point &bottomRight)
+{
+	m_BottomRight = bottomRight;
 }
 
 void Cell::Select(bool isSelected)

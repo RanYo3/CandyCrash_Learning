@@ -42,6 +42,16 @@ bool Point::operator!=(const Point &other) const
 	return !(*this == other);
 }
 
+Point Point::operator+(int num) const
+{
+	return Point(m_X + num, m_Y + num);
+}
+
+Point Point::operator-(int num) const
+{
+	return (*this)+(-num);
+}
+
 int Point::GetX() const
 {
 	return m_X;

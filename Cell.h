@@ -3,25 +3,30 @@
 #include "Point.h"
 #include "Shape.h"
 
+#define MARGIN 3
+
 class Cell
 {
 public:
 	Cell();
 	~Cell();
 
-	Cell(Shape *shape, Point location);
+	Cell(Shape *shape, const Point &topLeft, const Point &bottomRight);
 	Cell(const Cell &other);
 	const Cell &operator=(const Cell &other);
 
 	Shape *GetShape() const;
-	const Point &GetLocation() const;
+	const Point &GetTopLeft() const;
+	const Point &GetBottomRight() const;
 
-	void SetLocation(const Point &location);
+	void SetTopLeft(const Point &topLeft);
+	void SetBottomRight(const Point &bottomRight);
 
 	void Select(bool isSelected);
 
 private:
 	Shape *m_Shape;
-	Point m_Location;
+	Point m_TopLeft;
+	Point m_BottomRight;
 	bool m_IsSelected;
 };

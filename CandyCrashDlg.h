@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Board.h"
 
 // CCandyCrashDlg dialog
 class CCandyCrashDlg : public CDialogEx
@@ -11,6 +12,7 @@ class CCandyCrashDlg : public CDialogEx
 // Construction
 public:
 	CCandyCrashDlg(CWnd* pParent = NULL);	// standard constructor
+	virtual ~CCandyCrashDlg();
 
 // Dialog Data
 	enum { IDD = IDD_CANDYCRASH_DIALOG };
@@ -18,6 +20,10 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
+private:
+	Board *m_Board;
+
+	void PaintBoard(CPaintDC &dc) const;
 
 // Implementation
 protected:

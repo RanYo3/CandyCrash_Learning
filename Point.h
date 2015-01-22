@@ -13,6 +13,9 @@ public:
 	bool operator==(const Point &other) const;
 	bool operator!=(const Point &other) const;
 
+	Point operator+(int num) const;
+	Point operator-(int num) const;
+
 	int GetX() const;
 	int GetY() const;
 

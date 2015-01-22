@@ -12,6 +12,7 @@
 #include "Sh_Rectangle.h"
 #include "Sh_Diamond.h"
 #include "Point.h"
+#include "Cell.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -58,6 +59,15 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCandyCrashDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_Board = new Board(3, Point(0, 0), Point(240, 240));
+}
+
+CCandyCrashDlg::~CCandyCrashDlg()
+{
+	if (m_Board != NULL)
+	{
+		delete[] m_Board;
+	}
 }
 
 void CCandyCrashDlg::DoDataExchange(CDataExchange* pDX)
@@ -147,6 +157,33 @@ void PaintShape(Shape *shape, CPaintDC &dc)
 	}
 }
 
+void PaintCell(Cell *cell, CPaintDC &dc)
+{
+	Point topLeft = cell->GetTopLeft();
+	Point bottomRight = cell->GetBottomRight();
+
+	dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+
+	PaintShape(cell->GetShape(), dc);
+}
+
+void CCandyCrashDlg::PaintBoard(CPaintDC &dc) const
+{
+	int rows = m_Board->GetRows();
+	int cols = m_Board->GetCols();
+
+	Cell *cell;
+
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			cell = m_Board->GetCell(i, j);
+			PaintCell(cell, dc);
+		}
+	}
+}
+
 // If you add a minimize button to your dialog, you will need the code below
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
@@ -174,21 +211,24 @@ void CCandyCrashDlg::OnPaint()
 	{
 		CPaintDC dc(this);
 
-		// Triangle
-		Sh_Triangle tri(Point(50, 50), Point(200, 200));
-		PaintShape(&tri, dc);
+		PaintBoard(dc);
 
-		// Ellipse
-		Sh_Ellipse elli(Point(50, 200), Point(200, 300));
-		PaintShape(&elli, dc);
+		//// Triangle
+		//Sh_Triangle tri(Point(50, 50), Point(200, 200));
+		////PaintCell(
+		//PaintShape(&tri, dc);
 
-		// Rectangle
-		Sh_Rectangle rect(Point(200, 50), Point(300, 200));
-		PaintShape(&rect, dc);
+		//// Ellipse
+		//Sh_Ellipse elli(Point(50, 200), Point(200, 300));
+		//PaintShape(&elli, dc);
 
-		// Diamond
-		Sh_Diamond dia(Point(200, 200), Point(300, 300));
-		PaintShape(&dia, dc);
+		//// Rectangle
+		//Sh_Rectangle rect(Point(200, 50), Point(300, 200));
+		//PaintShape(&rect, dc);
+
+		//// Diamond
+		//Sh_Diamond dia(Point(200, 200), Point(300, 300));
+		//PaintShape(&dia, dc);
 
 		CDialogEx::OnPaint();
 	}
