@@ -61,7 +61,7 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_Board = new Board(3, Point(0, 0), Point(240, 240));
 	m_RegularPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
-	m_SelectedPen = new CPen(PS_SOLID, 1, RGB(0,0,255));
+	m_SelectedPen = new CPen(PS_SOLID, 3, RGB(255,0,0));
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -146,6 +146,9 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 {
 	Point *_poly      = shape->GetPolygon();
 	ShapeType sh_type = shape->GetType();
+	
+	CBrush shapeClr(shape->GetColor().GetColorRef());
+	CBrush *oldBrush = dc.SelectObject(&shapeClr);
 
 	if (sh_type == ST_Ellipse)
 	{
@@ -166,6 +169,8 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 		dc.Polygon(poly, polySize);
 		delete[] poly;
 	}
+
+	dc.SelectObject(oldBrush);
 }
 
 void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const

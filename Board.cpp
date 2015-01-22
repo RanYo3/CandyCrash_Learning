@@ -4,6 +4,8 @@
 #include "Sh_Rectangle.h"
 #include "Sh_Diamond.h"
 #include "Sh_Ellipse.h"
+#include "Sh_Plus.h"
+#include "Sh_Minus.h"
 
 Board::Board(int matrixSize, const Point &topLeft, const Point &bottomRight)
 	: m_Rows(matrixSize), m_Cols(matrixSize), m_TopLeft(topLeft), m_BottomRight(bottomRight)
@@ -129,10 +131,12 @@ void Board::InitShapeCollection()
 {
 	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
 
-	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle;
-	m_ShapesCollection[ST_Ellipse] = new Sh_Ellipse;
-	m_ShapesCollection[ST_Triangle] = new Sh_Triangle;
-	m_ShapesCollection[ST_Diamond] = new Sh_Diamond;
+	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle(BLUE);
+	m_ShapesCollection[ST_Ellipse] = new Sh_Ellipse(RED);
+	m_ShapesCollection[ST_Triangle] = new Sh_Triangle(YELLOW);
+	m_ShapesCollection[ST_Diamond] = new Sh_Diamond(GREEN);
+	m_ShapesCollection[ST_Plus] = new Sh_Plus(MAGENTA);
+	m_ShapesCollection[ST_Minus] = new Sh_Minus(CYAN);
 }
 
 void Board::InitMatrix()

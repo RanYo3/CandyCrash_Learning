@@ -4,9 +4,9 @@
 #include "Point.h"
 
 #define NULL 0
-#define NUM_OF_SHAPES 4
+#define NUM_OF_SHAPES 6
 
-enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Unknown };
+enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Plus, ST_Minus, ST_Unknown };
 
 class Shape
 {

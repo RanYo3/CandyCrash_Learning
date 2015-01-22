@@ -47,6 +47,11 @@ bool Color::operator!=(const Color &other) const
 	return !(*this == other);
 }
 
+COLORREF Color::GetColorRef() const
+{
+	return RGB(m_R, m_G, m_B);
+}
+
 void Color::SetRGB(char r, char g, char b)
 {
 	m_R = r;
