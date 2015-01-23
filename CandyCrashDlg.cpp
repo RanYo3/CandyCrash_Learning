@@ -61,8 +61,9 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_Board = new Board(10, Point(30, 30), Point(450, 450));
 	m_DefaultPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
-	m_SelectedPen = new CPen(PS_SOLID, 3, RGB(255,0,0));
-	m_MarkPen = new CPen(PS_SOLID, 2, RGB(0,255,0));
+	m_SelectedPen = new CPen(PS_SOLID, 5, RGB(255,0,0));
+	m_MarkPen = new CPen(PS_SOLID, 5, RGB(0,0,255));
+	m_sequenceEvent = false;
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -250,24 +251,14 @@ void CCandyCrashDlg::OnPaint()
 		dc.SelectObject(m_DefaultPen);
 		PaintBoard(dc);
 
-		//// Triangle
-		//Sh_Triangle tri(Point(50, 50), Point(200, 200));
-		////PaintCell(
-		//PaintShape(&tri, dc);
-
-		//// Ellipse
-		//Sh_Ellipse elli(Point(50, 200), Point(200, 300));
-		//PaintShape(&elli, dc);
-
-		//// Rectangle
-		//Sh_Rectangle rect(Point(200, 50), Point(300, 200));
-		//PaintShape(&rect, dc);
-
-		//// Diamond
-		//Sh_Diamond dia(Point(200, 200), Point(300, 300));
-		//PaintShape(&dia, dc);
-
 		CDialogEx::OnPaint();
+
+		if (m_sequenceEvent)
+		{
+			SequenceEventAfterSwap();
+			Sleep(500);
+			Invalidate();
+		}
 	}
 }
 
@@ -305,14 +296,7 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				}
 				else
 				{
-					int minCol;
-					int maxCol;
-					int maxRow;
-					do
-					{
-						m_Board->DoExplosion(minCol, maxCol, maxRow);
-					}
-					while (m_Board->CheckSequencesInRange(minCol, maxCol, maxRow));
+					m_sequenceEvent=true;
 				}
 				m_SelectedCell = NULL_POINT;
 			}
@@ -331,4 +315,20 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 
 	Invalidate();
+}
+
+void CCandyCrashDlg::SequenceEventAfterSwap()
+{
+	m_sequenceEvent=false;
+
+	int minCol;
+	int maxCol;
+	int maxRow;
+
+	m_Board->DoExplosion(minCol, maxCol, maxRow);
+
+	if (m_Board->CheckSequencesInRange(minCol, maxCol, maxRow))
+	{
+		m_sequenceEvent=true;
+	}
 }

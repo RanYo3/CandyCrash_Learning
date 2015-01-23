@@ -142,8 +142,6 @@ void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
 	maxCol = -1;
 	maxRow = -1;
 
-	Cell *currentCell;
-
 	for (int j = m_Cols-1 ; j>=0 ; j--)
 	{
 		for( int i = m_Rows-1 ; i>=0 ; i--)
