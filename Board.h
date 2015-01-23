@@ -22,6 +22,7 @@ public:
 	Cell *GetCell(int row, int col) const;
 	Cell *GetCell(const Point &index) const;
 	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
+	bool CheckSequence(const Point &index, bool initialMatrix, bool markCells);
 	bool CheckSequence(int x, int y, bool initialMatrix = false, bool markCells = false);
 
 	bool AreNeighbours(const Point &p1, const Point &p2) const;
@@ -40,7 +41,7 @@ private:
 
 	void CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const;
 
-	bool SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3,  bool markCell) const;
+	bool SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3,  bool markCell);
 	bool IsInMatrix(int x, int y) const;
 
 	Shape *RandomShape() const;

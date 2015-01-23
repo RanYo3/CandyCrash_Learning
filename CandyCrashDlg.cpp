@@ -59,9 +59,10 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_SelectedCell(NULL_POINT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_Board = new Board(2, Point(0, 0), Point(400, 400));
+	m_Board = new Board(7, Point(30, 30), Point(450, 450));
 	m_DefaultPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
 	m_SelectedPen = new CPen(PS_SOLID, 3, RGB(255,0,0));
+	m_MarkPen = new CPen(PS_SOLID, 2, RGB(0,255,0));
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -77,6 +78,10 @@ CCandyCrashDlg::~CCandyCrashDlg()
 	if (m_SelectedPen != NULL)
 	{
 		delete m_SelectedPen;
+	}
+	if (m_MarkPen != NULL)
+	{
+		delete m_MarkPen;
 	}
 }
 
@@ -184,6 +189,12 @@ void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const
 		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
 		dc.SelectObject(m_DefaultPen);
 	}
+	else if (cell->IsInSequence())
+	{
+		dc.SelectObject(m_MarkPen);
+		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+		dc.SelectObject(m_DefaultPen);
+	}
 	else
 	{
 		dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
@@ -287,6 +298,9 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
 				m_Board->Swap(index, m_SelectedCell);
+				m_Board->CheckSequence(m_SelectedCell, false, true);
+				m_Board->CheckSequence(index, false, true);
+				m_SelectedCell = NULL_POINT;
 			}
 			else
 			{

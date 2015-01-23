@@ -114,10 +114,19 @@ void Board::Swap(const Point &index1, const Point &index2)
 	int x2 = index2.GetX();
 	int y2 = index2.GetY();
 
-	Shape *tempShape = m_Matrix[y1][x1]->GetShape()->Clone();
-	m_Matrix[y1][x1]->SetShape(m_Matrix[y2][x2]->GetShape());
-	m_Matrix[y2][x2]->SetShape(tempShape);
-	delete tempShape;
+	Cell* cell1 = InitCell(m_Matrix[y1][x1]->GetShape(), m_Matrix[y2][x2]->GetTopLeft(), m_Matrix[y2][x2]->GetBottomRight());
+	Cell* cell2 = InitCell(m_Matrix[y2][x2]->GetShape(), m_Matrix[y1][x1]->GetTopLeft(), m_Matrix[y1][x1]->GetBottomRight());
+
+	delete m_Matrix[y1][x1];
+	delete m_Matrix[y2][x2];
+
+	m_Matrix[y1][x1] = cell2;
+	m_Matrix[y2][x2] = cell1;
+
+	//Shape *tempShape = m_Matrix[y1][x1]->GetShape()->Clone();
+	//m_Matrix[y1][x1]->SetShape(m_Matrix[y2][x2]->GetShape());
+	//m_Matrix[y2][x2]->SetShape(tempShape);
+	//delete tempShape;
 
 	//Shape *shape1 = m_Matrix[y1][x1]->GetShape();
 	//Shape *shape2 = m_Matrix[y2][x2]->GetShape();
@@ -137,15 +146,15 @@ void Board::Swap(const Point &index1, const Point &index2)
 	//m_Matrix[y1][x1]->SetBottomRight(m_Matrix[y2][x2]->GetBottomRight());
 	//m_Matrix[y2][x2]->SetBottomRight(pTemp);
 	//
-	// Swap top-left location of shapes
-	Point pTemp = m_Matrix[y1][x1]->GetShape()->GetTopLeft();
-	m_Matrix[y1][x1]->GetShape()->SetTopLeft(m_Matrix[y2][x2]->GetShape()->GetTopLeft());
-	m_Matrix[y2][x2]->GetShape()->SetTopLeft(pTemp);
-	
-	// Swap bottom-right location of shapes
-	pTemp = m_Matrix[y1][x1]->GetShape()->GetBottomRight();
-	m_Matrix[y1][x1]->GetShape()->SetBottomRight(m_Matrix[y2][x2]->GetShape()->GetBottomRight());
-	m_Matrix[y2][x2]->GetShape()->SetBottomRight(pTemp);
+	//// Swap top-left location of shapes
+	//Point pTemp = m_Matrix[y1][x1]->GetShape()->GetTopLeft();
+	//m_Matrix[y1][x1]->GetShape()->SetTopLeft(m_Matrix[y2][x2]->GetShape()->GetTopLeft());
+	//m_Matrix[y2][x2]->GetShape()->SetTopLeft(pTemp);
+	//
+	//// Swap bottom-right location of shapes
+	//pTemp = m_Matrix[y1][x1]->GetShape()->GetBottomRight();
+	//m_Matrix[y1][x1]->GetShape()->SetBottomRight(m_Matrix[y2][x2]->GetShape()->GetBottomRight());
+	//m_Matrix[y2][x2]->GetShape()->SetBottomRight(pTemp);
 }
 
 void Board::InitData()
@@ -195,7 +204,7 @@ void Board::InitMatrix()
 			m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 			delete tempShape;
 
-			while (CheckSequence(i,j, true))
+			while (CheckSequence(j,i, true))
 			{
 				delete m_Matrix[i][j];
 
@@ -203,9 +212,6 @@ void Board::InitMatrix()
 				m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 				delete tempShape;
 			}
-			
-
-			
 		}
 	}
 }
@@ -255,7 +261,12 @@ Shape *Board::RandomShape() const
 	return m_ShapesCollection[rand_idx]->Clone();
 }
 
-bool Board::CheckSequence(int x, int y,  bool initialMatrix, bool markCells)
+bool Board::CheckSequence(const Point &index, bool initialMatrix, bool markCells)
+{
+	return CheckSequence(index.GetX(), index.GetY(), initialMatrix, markCells);
+}
+
+bool Board::CheckSequence(int x, int y, bool initialMatrix, bool markCells)
 {
 
 	bool sequenceFlag = false;
@@ -296,16 +307,16 @@ bool Board::CheckSequence(int x, int y,  bool initialMatrix, bool markCells)
 	return sequenceFlag;
 }
 
-bool Board::SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3, bool markCells) const
+bool Board::SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3, bool markCells)
 {
-	if (*(m_Matrix[x1][y1]->GetShape()) == *(m_Matrix[x2][y2]->GetShape()) &&
-		*(m_Matrix[x1][y1]->GetShape()) == *(m_Matrix[x3][y3]->GetShape()))
+	if (*(m_Matrix[y1][x1]->GetShape()) == *(m_Matrix[y2][x2]->GetShape()) &&
+		*(m_Matrix[y1][x1]->GetShape()) == *(m_Matrix[y3][x3]->GetShape()))
 	{
 		if (markCells == true)
 		{
-			m_Matrix[x1][y1]->MarkAsSequence();
-			m_Matrix[x2][y2]->MarkAsSequence();
-			m_Matrix[x3][y3]->MarkAsSequence();
+			m_Matrix[y1][x1]->MarkAsSequence();
+			m_Matrix[y2][x2]->MarkAsSequence();
+			m_Matrix[y3][x3]->MarkAsSequence();
 		}
 		return true;
 	}
