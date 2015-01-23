@@ -18,17 +18,21 @@ public:
 	Shape *GetShape() const;
 	const Point &GetTopLeft() const;
 	const Point &GetBottomRight() const;
+
 	bool IsSelected() const;
+	bool IsInSequence() const; 
 
 	void SetShape(Shape *shape);
 	void SetTopLeft(const Point &topLeft);
 	void SetBottomRight(const Point &bottomRight);
 
 	void Select(bool isSelected);
+	void MarkAsSequence();
 
 private:
 	Shape *m_Shape;
 	Point m_TopLeft;
 	Point m_BottomRight;
 	bool m_IsSelected;
+	bool m_IsInSequence;
 };

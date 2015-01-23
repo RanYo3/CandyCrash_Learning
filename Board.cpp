@@ -190,15 +190,32 @@ void Board::InitMatrix()
 		for (int j = 0; j < m_Cols; j++)
 		{
 			CalcCellLocation(i, j, cellTopLeft, cellBottomRight);
+
 			tempShape = RandomShape();
-			tempShape->SetTopLeft(cellTopLeft + MARGIN);
-			tempShape->SetBottomRight(cellBottomRight - MARGIN);
-
-			m_Matrix[i][j] = new Cell(tempShape->Clone(), cellTopLeft, cellBottomRight);
-
+			m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 			delete tempShape;
+
+			while (CheckSequence(i,j, true))
+			{
+				delete m_Matrix[i][j];
+
+				tempShape = RandomShape();
+				m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
+				delete tempShape;
+			}
+			
+
+			
 		}
 	}
+}
+
+Cell *Board::InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const
+{
+	shape->SetTopLeft(topLeft + MARGIN);
+	shape->SetBottomRight(bottomRight - MARGIN);
+
+	return new Cell(shape->Clone(), topLeft, bottomRight);
 }
 
 void Board::DeleteMatrix()
@@ -236,4 +253,68 @@ Shape *Board::RandomShape() const
 {
 	int rand_idx = rand() % NUM_OF_SHAPES;
 	return m_ShapesCollection[rand_idx]->Clone();
+}
+
+bool Board::CheckSequence(int x, int y,  bool initialMatrix, bool markCells)
+{
+
+	bool sequenceFlag = false;
+
+	if (!initialMatrix)
+	{
+		if (IsInMatrix(x,y+2) && SequenceByIndex(x,y,  x,y+1,  x,y+2,  markCells))
+		{
+			sequenceFlag = true;
+		}
+
+		if (IsInMatrix(x,y+1) && IsInMatrix(x,y-1) && SequenceByIndex(x,y,  x,y+1,  x,y-1,  markCells))
+		{
+			sequenceFlag = true;
+		}
+
+		if (IsInMatrix(x+2,y) && SequenceByIndex(x,y,  x+1,y,  x+2,y,  markCells))
+		{
+			sequenceFlag = true;
+		}
+
+		if (IsInMatrix(x-1,y) && IsInMatrix(x+1,y) && SequenceByIndex(x,y,  x-1,y,  x+1,y,  markCells))
+		{
+			sequenceFlag = true;
+		}
+	}
+
+	if (IsInMatrix(x,y-2) && SequenceByIndex(x,y,  x,y-1,  x,y-2,  markCells))
+	{
+		sequenceFlag = true;
+	}
+
+	if (IsInMatrix(x-2,y) && SequenceByIndex(x,y,  x-1,y,  x-2,y,  markCells))
+	{
+		sequenceFlag = true;
+	}
+
+	return sequenceFlag;
+}
+
+bool Board::SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3, bool markCells) const
+{
+	if (*(m_Matrix[x1][y1]->GetShape()) == *(m_Matrix[x2][y2]->GetShape()) &&
+		*(m_Matrix[x1][y1]->GetShape()) == *(m_Matrix[x3][y3]->GetShape()))
+	{
+		if (markCells == true)
+		{
+			m_Matrix[x1][y1]->MarkAsSequence();
+			m_Matrix[x2][y2]->MarkAsSequence();
+			m_Matrix[x3][y3]->MarkAsSequence();
+		}
+		return true;
+	}
+	
+	return false;
+}
+
+bool Board::IsInMatrix(int x, int y) const
+{
+	return (x >= 0 && x < m_Cols &&
+			y >= 0 && y < m_Rows);
 }
