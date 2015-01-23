@@ -104,17 +104,12 @@ bool Board::AreNeighbours(const Point &p1, const Point &p2) const
 		   (!horizontalNeighbours && verticalNeighbours);
 }
 
-void Board::Swap(const Point &index1, const Point &index2)
+void Board::Swap(int x1, int y1, int x2, int y2)
 {
-	if (index1 == index2)
+	if (x1==x2 && y1==y2)
 	{
 		return;
 	}
-
-	int x1 = index1.GetX();
-	int y1 = index1.GetY();
-	int x2 = index2.GetX();
-	int y2 = index2.GetY();
 
 	Cell* cell1 = InitCell(m_Matrix[y1][x1]->GetShape(), m_Matrix[y2][x2]->GetTopLeft(), m_Matrix[y2][x2]->GetBottomRight());
 	Cell* cell2 = InitCell(m_Matrix[y2][x2]->GetShape(), m_Matrix[y1][x1]->GetTopLeft(), m_Matrix[y1][x1]->GetBottomRight());
@@ -124,39 +119,49 @@ void Board::Swap(const Point &index1, const Point &index2)
 
 	m_Matrix[y1][x1] = cell2;
 	m_Matrix[y2][x2] = cell1;
+}
 
-	//Shape *tempShape = m_Matrix[y1][x1]->GetShape()->Clone();
-	//m_Matrix[y1][x1]->SetShape(m_Matrix[y2][x2]->GetShape());
-	//m_Matrix[y2][x2]->SetShape(tempShape);
-	//delete tempShape;
+void Board::Swap(const Point &index1, const Point &index2)
+{
+	Swap(index1.GetX(), index1.GetY(), index2.GetX(), index2.GetY());
+}
 
-	//Shape *shape1 = m_Matrix[y1][x1]->GetShape();
-	//Shape *shape2 = m_Matrix[y2][x2]->GetShape();
+void Board::ReplaceWithNewCell(int row, int col)
+{
+	Point topLeft =  m_Matrix[row][col]->GetTopLeft();
+	Point bottomRight = m_Matrix[row][col]->GetBottomRight();
 
-	//// Swap cell pointers in matrix
-	//Cell *cTemp = m_Matrix[y1][x1];
-	//m_Matrix[y1][x1] = m_Matrix[y2][x2];
-	//m_Matrix[y2][x2] = cTemp;
+	delete m_Matrix[row][col];
 
-	//// Swap top-left location of cells
-	//Point pTemp = m_Matrix[y1][x1]->GetTopLeft();
-	//m_Matrix[y1][x1]->SetTopLeft(m_Matrix[y2][x2]->GetTopLeft());
-	//m_Matrix[y2][x2]->SetTopLeft(pTemp);
+	m_Matrix[row][col] = InitCell(RandomShape(), topLeft , bottomRight);
+}
 
-	//// Swap bottom-right location of cells
-	//pTemp = m_Matrix[y1][x1]->GetBottomRight();
-	//m_Matrix[y1][x1]->SetBottomRight(m_Matrix[y2][x2]->GetBottomRight());
-	//m_Matrix[y2][x2]->SetBottomRight(pTemp);
-	//
-	//// Swap top-left location of shapes
-	//Point pTemp = m_Matrix[y1][x1]->GetShape()->GetTopLeft();
-	//m_Matrix[y1][x1]->GetShape()->SetTopLeft(m_Matrix[y2][x2]->GetShape()->GetTopLeft());
-	//m_Matrix[y2][x2]->GetShape()->SetTopLeft(pTemp);
-	//
-	//// Swap bottom-right location of shapes
-	//pTemp = m_Matrix[y1][x1]->GetShape()->GetBottomRight();
-	//m_Matrix[y1][x1]->GetShape()->SetBottomRight(m_Matrix[y2][x2]->GetShape()->GetBottomRight());
-	//m_Matrix[y2][x2]->GetShape()->SetBottomRight(pTemp);
+void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
+{
+	minCol = m_Cols;
+	maxCol = -1;
+	maxRow = -1;
+
+	Cell *currentCell;
+
+	for (int j = m_Cols-1 ; j>=0 ; j--)
+	{
+		for( int i = m_Rows-1 ; i>=0 ; i--)
+		{
+			if (m_Matrix[i][j]->IsInSequence())
+			{
+				if (j < minCol)
+					minCol = j;
+				if (j > maxCol)
+					maxCol = j;
+				if (i > maxRow)
+					maxRow = i;
+
+				RollCellsUp(i,j);
+				break;
+			}
+		}
+	}
 }
 
 void Board::InitData()
@@ -250,6 +255,29 @@ void Board::DeleteShapeCollection()
 	delete[] m_ShapesCollection;
 }
 
+void Board::RollCellsUp(int row, int col)
+{
+	int i=1;
+	while(row-i >= 0)
+	{
+		while(row-i >= 0 && m_Matrix[row-i][col]->IsInSequence())
+		{
+			i++;
+		}
+		if (row-i >= 0)
+		{
+			Swap(col, row, col, row-i);
+		}
+		row--;
+	}
+	for (int j=0 ; j<i ; j++)
+	{
+		ReplaceWithNewCell(j, col);
+	}
+}
+
+
+
 void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const
 {
 	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * j));
@@ -306,6 +334,24 @@ bool Board::CheckSequence(int x, int y, bool initialMatrix, bool markCells)
 	if (IsInMatrix(x-2,y) && SequenceByIndex(x,y,  x-1,y,  x-2,y,  markCells))
 	{
 		sequenceFlag = true;
+	}
+
+	return sequenceFlag;
+}
+
+bool Board::CheckSequencesInRange(int minCol, int maxCol, int maxRow)
+{
+	bool sequenceFlag = false;
+
+	for (int i = 0; i <= maxRow; i++)
+	{
+		for (int j = minCol; j <= maxCol; j++)
+		{
+			if (CheckSequence(j, i, false, true))
+			{
+				sequenceFlag = true;
+			}
+		}
 	}
 
 	return sequenceFlag;

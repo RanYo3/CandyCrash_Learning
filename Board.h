@@ -24,18 +24,24 @@ public:
 	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
 	bool CheckSequence(const Point &index, bool initialMatrix, bool markCells);
 	bool CheckSequence(int x, int y, bool initialMatrix = false, bool markCells = false);
+	bool CheckSequencesInRange(int minCol, int maxCol, int maxRow);
 
 	bool AreNeighbours(const Point &p1, const Point &p2) const;
 
+	void Swap(int x1, int y1, int x2, int y2);
 	void Swap(const Point &p1, const Point &p2);
 
+	void DoExplosion(int &minCol, int &maxCol, int &maxRow);
+
 private:
+	void ReplaceWithNewCell(int row, int col);
 	void InitData();
 	void InitCellSize();
 	void InitMatrix();
 	void InitShapeCollection();
 	void DeleteMatrix();
 	void DeleteShapeCollection();
+	void RollCellsUp(int row, int col);
 
 	Cell *InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const;
 
