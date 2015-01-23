@@ -72,6 +72,12 @@
     <ClInclude Include="Sh_Minus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sh_Star.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sh_X.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CandyCrash.cpp">
@@ -114,6 +120,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sh_Minus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sh_Star.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sh_X.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

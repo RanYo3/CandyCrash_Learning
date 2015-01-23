@@ -6,6 +6,8 @@
 #include "Sh_Ellipse.h"
 #include "Sh_Plus.h"
 #include "Sh_Minus.h"
+#include "Sh_Star.h"
+#include "Sh_X.h"
 
 #include <math.h>
 
@@ -174,12 +176,14 @@ void Board::InitShapeCollection()
 {
 	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
 
-	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle(BLUE);
-	m_ShapesCollection[ST_Ellipse] = new Sh_Ellipse(RED);
-	m_ShapesCollection[ST_Triangle] = new Sh_Triangle(YELLOW);
-	m_ShapesCollection[ST_Diamond] = new Sh_Diamond(GREEN);
-	m_ShapesCollection[ST_Plus] = new Sh_Plus(MAGENTA);
-	m_ShapesCollection[ST_Minus] = new Sh_Minus(CYAN);
+	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle(ORANGE        );
+	m_ShapesCollection[ST_Ellipse]   = new Sh_Ellipse  (SKY_BLUE      );
+	m_ShapesCollection[ST_Triangle]  = new Sh_Triangle (AZURE         );
+	m_ShapesCollection[ST_Diamond]   = new Sh_Diamond  (INDIGO        );
+	m_ShapesCollection[ST_Plus]      = new Sh_Plus     (PURPLE        );
+	m_ShapesCollection[ST_Minus]     = new Sh_Minus    (CYAN          );
+	m_ShapesCollection[ST_Star]      = new Sh_Star     (BLUE          );
+	m_ShapesCollection[ST_X]         = new Sh_X        (LIME          );
 }
 
 void Board::InitMatrix()
