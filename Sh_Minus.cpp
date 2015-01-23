@@ -2,7 +2,7 @@
 #include "Sh_Minus.h"
 
 Sh_Minus::Sh_Minus()
-	: Shape(ST_Triangle)
+	: Shape(ST_Minus)
 {
 	InitPolygon();
 }
@@ -12,19 +12,19 @@ Sh_Minus::~Sh_Minus()
 }
 
 Sh_Minus::Sh_Minus(Color color)
-	: Shape(ST_Triangle, color)
+	: Shape(ST_Minus, color)
 {
 	InitPolygon();
 }
 
 Sh_Minus::Sh_Minus(const Point &topLeft, const Point &bottomRight)
-	: Shape(topLeft, bottomRight, ST_Triangle)
+	: Shape(topLeft, bottomRight, ST_Minus)
 {
 	InitPolygon();
 }
 
 Sh_Minus::Sh_Minus(const Point &topLeft, const Point &bottomRight, Color color)
-	: Shape(topLeft, bottomRight, ST_Triangle, color)
+	: Shape(topLeft, bottomRight, ST_Minus, color)
 {
 	InitPolygon();
 }
@@ -62,7 +62,7 @@ Point *Sh_Minus::CreatePolygon() const
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
-	double partY = (double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE;
+	int partY = (int)((double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE);
 
 	poly[0] = Point(bottomRight.GetX(), topLeft.GetY()     + partY);
 	poly[1] = Point(bottomRight.GetX(), bottomRight.GetY() - partY);

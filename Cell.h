@@ -20,6 +20,7 @@ public:
 	const Point &GetBottomRight() const;
 	bool IsSelected() const;
 
+	void SetShape(Shape *shape);
 	void SetTopLeft(const Point &topLeft);
 	void SetBottomRight(const Point &bottomRight);
 

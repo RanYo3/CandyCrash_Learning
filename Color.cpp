@@ -10,7 +10,7 @@ Color::~Color()
 {
 }
 
-Color::Color(char r, char g, char b)
+Color::Color(int r, int g, int b)
 	: m_R(r), m_G(g), m_B(b)
 {
 
@@ -52,7 +52,7 @@ COLORREF Color::GetColorRef() const
 	return RGB(m_R, m_G, m_B);
 }
 
-void Color::SetRGB(char r, char g, char b)
+void Color::SetRGB(int r, int g, int b)
 {
 	m_R = r;
 	m_G = g;

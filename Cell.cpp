@@ -56,6 +56,15 @@ bool Cell::IsSelected() const
 	return m_IsSelected;
 }
 
+void Cell::SetShape(Shape *shape)
+{
+	if (m_Shape != NULL)
+	{
+		delete m_Shape;
+	}
+	m_Shape = shape->Clone();
+}
+
 void Cell::SetTopLeft(const Point &topLeft)
 {
 	m_TopLeft = topLeft;

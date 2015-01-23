@@ -7,6 +7,8 @@
 #include "Sh_Plus.h"
 #include "Sh_Minus.h"
 
+#include <math.h>
+
 Board::Board(int matrixSize, const Point &topLeft, const Point &bottomRight)
 	: m_Rows(matrixSize), m_Cols(matrixSize), m_TopLeft(topLeft), m_BottomRight(bottomRight)
 {
@@ -83,12 +85,21 @@ bool Board::GetCellIndex(const Point &locationInWindow, Point &index) const
 	if (indexI >= 0 && indexI < m_Rows && 
 		indexJ >= 0 && indexJ < m_Cols)
 	{
-		index.SetX(indexI);
-		index.SetY(indexJ);
+		index.SetX(indexJ);
+		index.SetY(indexI);
 		return true;
 	}
 
 	return false;
+}
+
+bool Board::AreNeighbours(const Point &p1, const Point &p2) const
+{
+	bool horizontalNeighbours = (abs(p1.GetX() - p2.GetX()) == 1) && (p1.GetY() == p2.GetY());
+	bool verticalNeighbours   = (abs(p1.GetY() - p2.GetY()) == 1) && (p1.GetX() == p2.GetX());
+	
+	return (horizontalNeighbours && !verticalNeighbours) ||
+		   (!horizontalNeighbours && verticalNeighbours);
 }
 
 void Board::Swap(const Point &index1, const Point &index2)
@@ -98,20 +109,43 @@ void Board::Swap(const Point &index1, const Point &index2)
 		return;
 	}
 
-	// Swap cell pointers in matrix
-	Cell *cTemp = m_Matrix[index1.GetY()][index1.GetX()];
-	m_Matrix[index1.GetY()][index1.GetX()] = m_Matrix[index2.GetY()][index2.GetX()];
-	m_Matrix[index2.GetY()][index2.GetX()] = cTemp;
+	int x1 = index1.GetX();
+	int y1 = index1.GetY();
+	int x2 = index2.GetX();
+	int y2 = index2.GetY();
 
-	// Swap top-left location in cells
-	Point pTemp = m_Matrix[index1.GetY()][index1.GetX()]->GetTopLeft();
-	m_Matrix[index1.GetY()][index1.GetX()]->SetTopLeft(m_Matrix[index2.GetY()][index2.GetX()]->GetTopLeft());
-	m_Matrix[index2.GetY()][index2.GetX()]->SetTopLeft(pTemp);
+	Shape *tempShape = m_Matrix[y1][x1]->GetShape()->Clone();
+	m_Matrix[y1][x1]->SetShape(m_Matrix[y2][x2]->GetShape());
+	m_Matrix[y2][x2]->SetShape(tempShape);
+	delete tempShape;
 
-	// Swap bottom-right location in cells
-	pTemp = m_Matrix[index1.GetY()][index1.GetX()]->GetBottomRight();
-	m_Matrix[index1.GetY()][index1.GetX()]->SetBottomRight(m_Matrix[index2.GetY()][index2.GetX()]->GetBottomRight());
-	m_Matrix[index2.GetY()][index2.GetX()]->SetBottomRight(pTemp);
+	//Shape *shape1 = m_Matrix[y1][x1]->GetShape();
+	//Shape *shape2 = m_Matrix[y2][x2]->GetShape();
+
+	//// Swap cell pointers in matrix
+	//Cell *cTemp = m_Matrix[y1][x1];
+	//m_Matrix[y1][x1] = m_Matrix[y2][x2];
+	//m_Matrix[y2][x2] = cTemp;
+
+	//// Swap top-left location of cells
+	//Point pTemp = m_Matrix[y1][x1]->GetTopLeft();
+	//m_Matrix[y1][x1]->SetTopLeft(m_Matrix[y2][x2]->GetTopLeft());
+	//m_Matrix[y2][x2]->SetTopLeft(pTemp);
+
+	//// Swap bottom-right location of cells
+	//pTemp = m_Matrix[y1][x1]->GetBottomRight();
+	//m_Matrix[y1][x1]->SetBottomRight(m_Matrix[y2][x2]->GetBottomRight());
+	//m_Matrix[y2][x2]->SetBottomRight(pTemp);
+	//
+	// Swap top-left location of shapes
+	Point pTemp = m_Matrix[y1][x1]->GetShape()->GetTopLeft();
+	m_Matrix[y1][x1]->GetShape()->SetTopLeft(m_Matrix[y2][x2]->GetShape()->GetTopLeft());
+	m_Matrix[y2][x2]->GetShape()->SetTopLeft(pTemp);
+	
+	// Swap bottom-right location of shapes
+	pTemp = m_Matrix[y1][x1]->GetShape()->GetBottomRight();
+	m_Matrix[y1][x1]->GetShape()->SetBottomRight(m_Matrix[y2][x2]->GetShape()->GetBottomRight());
+	m_Matrix[y2][x2]->GetShape()->SetBottomRight(pTemp);
 }
 
 void Board::InitData()
@@ -191,8 +225,8 @@ void Board::DeleteShapeCollection()
 
 void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const
 {
-	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * i));
-	topLeft.SetY(m_TopLeft.GetY() + (int)(m_CellSizeY * j));
+	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * j));
+	topLeft.SetY(m_TopLeft.GetY() + (int)(m_CellSizeY * i));
 
 	bottomRight.SetX(topLeft.GetX() + (int)m_CellSizeX);
 	bottomRight.SetY(topLeft.GetY() + (int)m_CellSizeY);

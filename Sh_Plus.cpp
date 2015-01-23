@@ -2,7 +2,7 @@
 #include "Sh_Plus.h"
 
 Sh_Plus::Sh_Plus()
-	: Shape(ST_Triangle)
+	: Shape(ST_Plus)
 {
 	InitPolygon();
 }
@@ -12,19 +12,19 @@ Sh_Plus::~Sh_Plus()
 }
 
 Sh_Plus::Sh_Plus(Color color)
-	: Shape(ST_Triangle, color)
+	: Shape(ST_Plus, color)
 {
 	InitPolygon();
 }
 
 Sh_Plus::Sh_Plus(const Point &topLeft, const Point &bottomRight)
-	: Shape(topLeft, bottomRight, ST_Triangle)
+	: Shape(topLeft, bottomRight, ST_Plus)
 {
 	InitPolygon();
 }
 
 Sh_Plus::Sh_Plus(const Point &topLeft, const Point &bottomRight, Color color)
-	: Shape(topLeft, bottomRight, ST_Triangle, color)
+	: Shape(topLeft, bottomRight, ST_Plus, color)
 {
 	InitPolygon();
 }
@@ -62,8 +62,8 @@ Point *Sh_Plus::CreatePolygon() const
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
-	double partX = (double)(bottomRight.GetX() - topLeft.GetX()) / PART_SIZE;
-	double partY = (double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE;
+	int partX = (int)((double)(bottomRight.GetX() - topLeft.GetX()) / PART_SIZE);
+	int partY = (int)((double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE);
 
 	poly[0]  = Point(topLeft.GetX()     + partX, topLeft.GetY()            );
 	poly[1]  = Point(bottomRight.GetX() - partX, topLeft.GetY()            );

@@ -20,7 +20,7 @@ public:
 	Color();
 	~Color();
 
-	Color(char r, char g, char b);
+	Color(int r, int g, int b);
 	Color(const Color &other);
 	const Color &operator=(const Color &other);
 
@@ -29,10 +29,10 @@ public:
 
 	COLORREF GetColorRef() const;
 
-	void SetRGB(char r, char g, char b);
+	void SetRGB(int r, int g, int b);
 
 private:
-	char m_R;
-	char m_G;
-	char m_B;
+	int m_R;
+	int m_G;
+	int m_B;
 };

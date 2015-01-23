@@ -23,6 +23,8 @@ public:
 	Cell *GetCell(const Point &index) const;
 	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
 
+	bool AreNeighbours(const Point &p1, const Point &p2) const;
+
 	void Swap(const Point &p1, const Point &p2);
 
 private:
