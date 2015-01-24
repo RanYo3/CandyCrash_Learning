@@ -23,7 +23,9 @@
 #define SKY_BLUE		Color(135, 206, 235)
 #define AZURE			Color(  0, 127, 255)
 #define INDIGO			Color(102,   0, 255)
-
+#define CREAM			Color(255, 253, 208)
+#define GREEN_DARK		Color( 34, 139,  34)
+#define HONEYDUE		Color(240, 255, 240)
 
 class Color
 {

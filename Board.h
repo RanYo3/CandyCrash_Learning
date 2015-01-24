@@ -18,6 +18,8 @@ public:
 
 	int GetRows() const;
 	int GetCols() const;
+	const Point &GetTopLeft() const;
+	const Point &GetBottomRight() const;
 
 	Cell *GetCell(int row, int col) const;
 	Cell *GetCell(const Point &index) const;

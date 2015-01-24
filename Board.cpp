@@ -69,6 +69,16 @@ int Board::GetCols() const
 	return m_Cols;
 }
 
+const Point &Board::GetTopLeft() const
+{
+	return m_TopLeft;
+}
+
+const Point &Board::GetBottomRight() const
+{
+	return m_BottomRight;
+}
+
 Cell *Board::GetCell(int row, int col) const
 {
 	return m_Matrix[row][col];
@@ -142,8 +152,6 @@ void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
 	maxCol = -1;
 	maxRow = -1;
 
-	Cell *currentCell;
-
 	for (int j = m_Cols-1 ; j>=0 ; j--)
 	{
 		for( int i = m_Rows-1 ; i>=0 ; i--)
@@ -182,13 +190,13 @@ void Board::InitShapeCollection()
 	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
 
 	m_ShapesCollection[ST_Rectangle] = new Sh_Rectangle(ORANGE        );
-	m_ShapesCollection[ST_Ellipse]   = new Sh_Ellipse  (SKY_BLUE      );
-	m_ShapesCollection[ST_Triangle]  = new Sh_Triangle (AZURE         );
+	m_ShapesCollection[ST_Ellipse]   = new Sh_Ellipse  (MAROON        );
+	m_ShapesCollection[ST_Triangle]  = new Sh_Triangle (ORANGE_LIGHT  );
 	m_ShapesCollection[ST_Diamond]   = new Sh_Diamond  (INDIGO        );
-	m_ShapesCollection[ST_Plus]      = new Sh_Plus     (PURPLE        );
+	m_ShapesCollection[ST_Plus]      = new Sh_Plus     (GREEN_DARK    );
 	m_ShapesCollection[ST_Minus]     = new Sh_Minus    (CYAN          );
 	m_ShapesCollection[ST_Star]      = new Sh_Star     (BLUE          );
-	m_ShapesCollection[ST_X]         = new Sh_X        (LIME          );
+	m_ShapesCollection[ST_X]         = new Sh_X        (MAGENTA       );
 }
 
 void Board::InitMatrix()

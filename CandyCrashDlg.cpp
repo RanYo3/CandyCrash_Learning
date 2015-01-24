@@ -59,10 +59,13 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_SelectedCell(NULL_POINT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_Board = new Board(10, Point(30, 30), Point(450, 450));
+	m_Board = new Board(10, Point(50, 50), Point(650, 650));
 	m_DefaultPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
-	m_SelectedPen = new CPen(PS_SOLID, 3, RGB(255,0,0));
+	m_SelectedPen = new CPen(PS_SOLID, 5, RGB(0,0,0));
 	m_MarkPen = new CPen(PS_SOLID, 2, RGB(0,255,0));
+	m_Background = new CBrush(RGB(240, 255, 240));
+	m_BoundaryOut = new CBrush(RGB(0, 0, 0));
+	m_BoundaryIn = new CBrush(RGB(255, 255, 255));
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -205,6 +208,20 @@ void CCandyCrashDlg::PaintCell(Cell *cell, CPaintDC &dc) const
 
 void CCandyCrashDlg::PaintBoard(CPaintDC &dc) const
 {
+	Point topLeft = m_Board->GetTopLeft() - BOUNDARY_OUT_STROKE;
+	Point bottomRight = m_Board->GetBottomRight() + BOUNDARY_OUT_STROKE;
+
+	dc.SelectObject(m_BoundaryOut);
+	dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+	
+	topLeft = m_Board->GetTopLeft() - BOUNDARY_IN_STROKE;
+	bottomRight = m_Board->GetBottomRight() + BOUNDARY_IN_STROKE;
+
+	dc.SelectObject(m_BoundaryIn);
+	dc.Rectangle(topLeft.GetX(), topLeft.GetY(), bottomRight.GetX(), bottomRight.GetY());
+
+	dc.SelectObject(m_Background);
+
 	int rows = m_Board->GetRows();
 	int cols = m_Board->GetCols();
 
@@ -247,6 +264,7 @@ void CCandyCrashDlg::OnPaint()
 	{
 		CPaintDC dc(this);
 		
+		dc.SelectObject(m_Background);
 		dc.SelectObject(m_DefaultPen);
 		PaintBoard(dc);
 
@@ -298,8 +316,16 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
 				m_Board->Swap(index, m_SelectedCell);
-				if (!m_Board->CheckSequence(m_SelectedCell, false, true) && 
-					!m_Board->CheckSequence(index, false, true))				//Will not commit swap if there is no sequence
+				bool validMove = false;
+				if (m_Board->CheckSequence(m_SelectedCell, false, true))
+				{
+					validMove = true;
+				}
+				if (m_Board->CheckSequence(index, false, true))
+				{
+					validMove = true;
+				}
+				if (!validMove)
 				{
 					m_Board->Swap(index, m_SelectedCell);
 				}
