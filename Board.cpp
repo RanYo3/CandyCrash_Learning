@@ -86,49 +86,71 @@ Cell *Board::GetCell(int row, int col) const
 
 Cell *Board::GetCell(const Point &index) const
 {
-	return m_Matrix[index.GetY()][index.GetX()];
+	return m_Matrix[index.GetX()][index.GetY()];
 }
 
 bool Board::GetCellIndex(const Point &locationInWindow, Point &index) const
 {
-	int indexI = (int)((double)(locationInWindow.GetY() - m_TopLeft.GetY()) / m_CellSizeY);
-	int indexJ = (int)((double)(locationInWindow.GetX() - m_TopLeft.GetX()) / m_CellSizeX);
+	int indexI = (int)((double)(locationInWindow.GetY() - m_TopLeft.GetY()) / m_CellSizeX);
+	int indexJ = (int)((double)(locationInWindow.GetX() - m_TopLeft.GetX()) / m_CellSizeY);
 
 	if (indexI >= 0 && indexI < m_Rows && 
 		indexJ >= 0 && indexJ < m_Cols)
 	{
-		index.SetX(indexJ);
-		index.SetY(indexI);
+		index.SetX(indexI);
+		index.SetY(indexJ);
 		return true;
 	}
 
 	return false;
 }
 
-bool Board::AreNeighbours(const Point &p1, const Point &p2) const
+bool Board::CheckSequence(const Point &index, bool initialMatrix, bool markCells)
 {
-	bool horizontalNeighbours = (abs(p1.GetX() - p2.GetX()) == 1) && (p1.GetY() == p2.GetY());
-	bool verticalNeighbours   = (abs(p1.GetY() - p2.GetY()) == 1) && (p1.GetX() == p2.GetX());
+	return CheckSequence(index.GetX(), index.GetY(), initialMatrix, markCells);
+}
+
+bool Board::CheckSequence(int row, int col, bool initialMatrix, bool markCells)
+{
+	bool sequenceFlag = (IsInMatrix(row    , col - 2) && SequenceByIndex(row, col, row    , col - 1, row    , col - 2, markCells)) +
+						(IsInMatrix(row - 2, col    ) && SequenceByIndex(row, col, row - 1, col    , row - 2, col    , markCells));
+
+	if (!initialMatrix)
+	{
+		sequenceFlag += (IsInMatrix(row - 1, col    ) && IsInMatrix(row + 1, col    ) && SequenceByIndex(row, col, row - 1, col    , row + 1, col    , markCells)) +
+						(IsInMatrix(row    , col + 1) && IsInMatrix(row    , col - 1) && SequenceByIndex(row, col, row    , col + 1, row    , col - 1, markCells)) +
+						(IsInMatrix(row + 2, col    ) &&                                 SequenceByIndex(row, col, row + 1, col    , row + 2, col    , markCells)) +
+						(IsInMatrix(row    , col + 2) &&                                 SequenceByIndex(row, col, row    , col + 1, row    , col + 2, markCells));
+	}
+
+	return sequenceFlag;
+}
+
+bool Board::CheckSequencesInRange(int minCol, int maxCol, int maxRow)
+{
+	bool sequenceFlag = false;
+
+	for (int row = 0; row <= maxRow; row++)
+	{
+		for (int col = minCol; col <= maxCol; col++)
+		{
+			if (CheckSequence(row, col, false, true))
+			{
+				sequenceFlag = true;
+			}
+		}
+	}
+
+	return sequenceFlag;
+}
+
+bool Board::AreNeighbours(const Point &index1, const Point &index2) const
+{
+	bool verticalNeighbours   = (abs(index1.GetX() - index2.GetX()) == 1) && (index1.GetY() == index2.GetY());
+	bool horizontalNeighbours = (abs(index1.GetY() - index2.GetY()) == 1) && (index1.GetX() == index2.GetX());
 	
 	return (horizontalNeighbours && !verticalNeighbours) ||
 		   (!horizontalNeighbours && verticalNeighbours);
-}
-
-void Board::Swap(int x1, int y1, int x2, int y2)
-{
-	if (x1==x2 && y1==y2)
-	{
-		return;
-	}
-
-	Cell* cell1 = InitCell(m_Matrix[y1][x1]->GetShape(), m_Matrix[y2][x2]->GetTopLeft(), m_Matrix[y2][x2]->GetBottomRight());
-	Cell* cell2 = InitCell(m_Matrix[y2][x2]->GetShape(), m_Matrix[y1][x1]->GetTopLeft(), m_Matrix[y1][x1]->GetBottomRight());
-
-	delete m_Matrix[y1][x1];
-	delete m_Matrix[y2][x2];
-
-	m_Matrix[y1][x1] = cell2;
-	m_Matrix[y2][x2] = cell1;
 }
 
 void Board::Swap(const Point &index1, const Point &index2)
@@ -136,14 +158,21 @@ void Board::Swap(const Point &index1, const Point &index2)
 	Swap(index1.GetX(), index1.GetY(), index2.GetX(), index2.GetY());
 }
 
-void Board::ReplaceWithNewCell(int row, int col)
+void Board::Swap(int row1, int col1, int row2, int col2)
 {
-	Point topLeft =  m_Matrix[row][col]->GetTopLeft();
-	Point bottomRight = m_Matrix[row][col]->GetBottomRight();
+	if (row1==row2 && col1==col2)
+	{
+		return;
+	}
 
-	delete m_Matrix[row][col];
+	Cell* cell1 = InitCell(m_Matrix[row1][col1]->GetShape(), m_Matrix[row2][col2]->GetTopLeft(), m_Matrix[row2][col2]->GetBottomRight());
+	Cell* cell2 = InitCell(m_Matrix[row2][col2]->GetShape(), m_Matrix[row1][col1]->GetTopLeft(), m_Matrix[row1][col1]->GetBottomRight());
 
-	m_Matrix[row][col] = InitCell(RandomShape(), topLeft , bottomRight);
+	delete m_Matrix[row1][col1];
+	delete m_Matrix[row2][col2];
+
+	m_Matrix[row1][col1] = cell2;
+	m_Matrix[row2][col2] = cell1;
 }
 
 void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
@@ -152,20 +181,20 @@ void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
 	maxCol = -1;
 	maxRow = -1;
 
-	for (int j = m_Cols-1 ; j>=0 ; j--)
+	for (int col = m_Cols - 1 ; col >= 0 ; col--)
 	{
-		for( int i = m_Rows-1 ; i>=0 ; i--)
+		for( int row = m_Rows - 1 ; row >= 0 ; row--)
 		{
-			if (m_Matrix[i][j]->IsInSequence())
+			if (m_Matrix[row][col]->IsInSequence())
 			{
-				if (j < minCol)
-					minCol = j;
-				if (j > maxCol)
-					maxCol = j;
-				if (i > maxRow)
-					maxRow = i;
+				if (col < minCol)
+					minCol = col;
+				if (col > maxCol)
+					maxCol = col;
+				if (row > maxRow)
+					maxRow = row;
 
-				RollCellsUp(i,j);
+				RollCellsUp(row, col);
 				break;
 			}
 		}
@@ -181,8 +210,8 @@ void Board::InitData()
 
 void Board::InitCellSize()
 {
-	m_CellSizeX = double(m_BottomRight.GetX() - m_TopLeft.GetX()) / m_Cols;
-	m_CellSizeY = double(m_BottomRight.GetY() - m_TopLeft.GetY()) / m_Rows;
+	m_CellSizeX = double(m_BottomRight.GetY() - m_TopLeft.GetY()) / m_Rows;
+	m_CellSizeY = double(m_BottomRight.GetX() - m_TopLeft.GetX()) / m_Cols;
 }
 
 void Board::InitShapeCollection()
@@ -208,29 +237,57 @@ void Board::InitMatrix()
 
 	m_Matrix = new Cell**[m_Rows];
 
-	srand(static_cast<int>(time(0)));		//to generate different seed for Rand()
+	srand(static_cast<int>(time(0)));		// to generate different seed for Rand()
 
-	for (int i = 0; i < m_Rows; i++)
+	for (int row = 0; row < m_Rows; row++)
 	{
-		m_Matrix[i] = new Cell*[m_Cols];
-		for (int j = 0; j < m_Cols; j++)
+		m_Matrix[row] = new Cell*[m_Cols];
+		for (int col = 0; col < m_Cols; col++)
 		{
-			CalcCellLocation(i, j, cellTopLeft, cellBottomRight);
+			CalcCellLocation(row, col, cellTopLeft, cellBottomRight);
 
 			tempShape = RandomShape();
-			m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
+			m_Matrix[row][col] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 			delete tempShape;
 
-			while (CheckSequence(j, i, true, false))
+			while (CheckSequence(row, col, true, false))
 			{
-				delete m_Matrix[i][j];
+				delete m_Matrix[row][col];
 
 				tempShape = RandomShape();
-				m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
+				m_Matrix[row][col] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 				delete tempShape;
 			}
 		}
 	}
+}
+
+Shape *Board::RandomShape() const
+{
+	int rand_idx = rand() % NUM_OF_SHAPES;
+	return m_ShapesCollection[rand_idx]->Clone();
+}
+
+void Board::DeleteShapeCollection()
+{
+	for (int row = 0; row < NUM_OF_SHAPES; row++)
+	{
+		delete m_ShapesCollection[row];
+	}
+	delete[] m_ShapesCollection;
+}
+
+void Board::DeleteMatrix()
+{
+	for (int row = 0; row < m_Rows; row++)
+	{
+		for (int col = 0; col < m_Cols; col++)
+		{
+			delete m_Matrix[row][col];
+		}
+		delete[] m_Matrix[row];
+	}
+	delete[] m_Matrix;
 }
 
 Cell *Board::InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const
@@ -241,140 +298,41 @@ Cell *Board::InitCell(Shape *shape, const Point &topLeft, const Point &bottomRig
 	return new Cell(shape->Clone(), topLeft, bottomRight);
 }
 
-void Board::DeleteMatrix()
+void Board::ReplaceWithNewCell(int row, int col)
 {
-	for (int i = 0; i < m_Rows; i++)
-	{
-		for (int j = 0; j < m_Cols; j++)
-		{
-			delete m_Matrix[i][j];
-		}
-		delete[] m_Matrix[i];
-	}
-	delete[] m_Matrix;
+	Point topLeft =  m_Matrix[row][col]->GetTopLeft();
+	Point bottomRight = m_Matrix[row][col]->GetBottomRight();
+
+	delete m_Matrix[row][col];
+
+	m_Matrix[row][col] = InitCell(RandomShape(), topLeft , bottomRight);
 }
 
-void Board::DeleteShapeCollection()
+void Board::CalcCellLocation(int row, int col, Point &topLeft, Point &bottomRight) const
 {
-	for (int i = 0; i < NUM_OF_SHAPES; i++)
-	{
-		delete m_ShapesCollection[i];
-	}
-	delete[] m_ShapesCollection;
+	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * col));
+	topLeft.SetY(m_TopLeft.GetY() + (int)(m_CellSizeY * row));
+
+	bottomRight.SetX(topLeft.GetX() + (int)m_CellSizeY);
+	bottomRight.SetY(topLeft.GetY() + (int)m_CellSizeX);
 }
 
-void Board::RollCellsUp(int row, int col)
+bool Board::IsInMatrix(int row, int col) const
 {
-	int i=1;
-	while(row-i >= 0)
-	{
-		while(row-i >= 0 && m_Matrix[row-i][col]->IsInSequence())
-		{
-			i++;
-		}
-		if (row-i >= 0)
-		{
-			Swap(col, row, col, row-i);
-		}
-		row--;
-	}
-	for (int j=0 ; j<i ; j++)
-	{
-		ReplaceWithNewCell(j, col);
-	}
+	return (row >= 0 && row < m_Rows &&
+			col >= 0 && col < m_Cols);
 }
 
-
-
-void Board::CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const
+bool Board::SequenceByIndex(int row1, int col1, int row2, int col2, int row3, int col3, bool markCells)
 {
-	topLeft.SetX(m_TopLeft.GetX() + (int)(m_CellSizeX * j));
-	topLeft.SetY(m_TopLeft.GetY() + (int)(m_CellSizeY * i));
-
-	bottomRight.SetX(topLeft.GetX() + (int)m_CellSizeX);
-	bottomRight.SetY(topLeft.GetY() + (int)m_CellSizeY);
-}
-
-Shape *Board::RandomShape() const
-{
-	int rand_idx = rand() % NUM_OF_SHAPES;
-	return m_ShapesCollection[rand_idx]->Clone();
-}
-
-bool Board::CheckSequence(const Point &index, bool initialMatrix, bool markCells)
-{
-	return CheckSequence(index.GetX(), index.GetY(), initialMatrix, markCells);
-}
-
-bool Board::CheckSequence(int x, int y, bool initialMatrix, bool markCells)
-{
-
-	bool sequenceFlag = false;
-
-	if (!initialMatrix)
-	{
-		if (IsInMatrix(x,y+2) && SequenceByIndex(x,y,  x,y+1,  x,y+2,  markCells))
-		{
-			sequenceFlag = true;
-		}
-
-		if (IsInMatrix(x,y+1) && IsInMatrix(x,y-1) && SequenceByIndex(x,y,  x,y+1,  x,y-1,  markCells))
-		{
-			sequenceFlag = true;
-		}
-
-		if (IsInMatrix(x+2,y) && SequenceByIndex(x,y,  x+1,y,  x+2,y,  markCells))
-		{
-			sequenceFlag = true;
-		}
-
-		if (IsInMatrix(x-1,y) && IsInMatrix(x+1,y) && SequenceByIndex(x,y,  x-1,y,  x+1,y,  markCells))
-		{
-			sequenceFlag = true;
-		}
-	}
-
-	if (IsInMatrix(x,y-2) && SequenceByIndex(x,y,  x,y-1,  x,y-2,  markCells))
-	{
-		sequenceFlag = true;
-	}
-
-	if (IsInMatrix(x-2,y) && SequenceByIndex(x,y,  x-1,y,  x-2,y,  markCells))
-	{
-		sequenceFlag = true;
-	}
-
-	return sequenceFlag;
-}
-
-bool Board::CheckSequencesInRange(int minCol, int maxCol, int maxRow)
-{
-	bool sequenceFlag = false;
-
-	for (int i = 0; i <= maxRow; i++)
-	{
-		for (int j = minCol; j <= maxCol; j++)
-		{
-			if (CheckSequence(j, i, false, true))
-			{
-				sequenceFlag = true;
-			}
-		}
-	}
-
-	return sequenceFlag;
-}
-
-bool Board::SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3, bool markCells)
-{
-	if (*(m_Matrix[y1][x1]->GetShape()) == *(m_Matrix[y2][x2]->GetShape()) &&
-		*(m_Matrix[y1][x1]->GetShape()) == *(m_Matrix[y3][x3]->GetShape()))
+	if (*(m_Matrix[row1][col1]->GetShape()) == *(m_Matrix[row2][col2]->GetShape()) &&
+		*(m_Matrix[row1][col1]->GetShape()) == *(m_Matrix[row3][col3]->GetShape()))
 	{
 		if (markCells == true)
 		{
-			m_Matrix[y1][x1]->MarkAsSequence();
-			m_Matrix[y2][x2]->MarkAsSequence();
-			m_Matrix[y3][x3]->MarkAsSequence();
+			m_Matrix[row1][col1]->MarkAsSequence();
+			m_Matrix[row2][col2]->MarkAsSequence();
+			m_Matrix[row3][col3]->MarkAsSequence();
 		}
 		return true;
 	}
@@ -382,8 +340,23 @@ bool Board::SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3, bool
 	return false;
 }
 
-bool Board::IsInMatrix(int x, int y) const
+void Board::RollCellsUp(int row, int col)
 {
-	return (x >= 0 && x < m_Cols &&
-			y >= 0 && y < m_Rows);
+	int markedCellsInCol = 1;
+	while (row - markedCellsInCol >= 0)
+	{
+		while ((row - markedCellsInCol >= 0) && (m_Matrix[row - markedCellsInCol][col]->IsInSequence()))
+		{
+			markedCellsInCol++;
+		}
+		if (row-markedCellsInCol >= 0)
+		{
+			Swap(row, col, row - markedCellsInCol, col);
+		}
+		row--;
+	}
+	for (int row = 0 ; row < markedCellsInCol ; row++)
+	{
+		ReplaceWithNewCell(row, col);
+	}
 }

@@ -24,35 +24,38 @@ public:
 	Cell *GetCell(int row, int col) const;
 	Cell *GetCell(const Point &index) const;
 	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
+
 	bool CheckSequence(const Point &index, bool initialMatrix = false, bool markCells = true);
-	bool CheckSequence(int x, int y, bool initialMatrix = false, bool markCells = true);
+	bool CheckSequence(int row, int col, bool initialMatrix = false, bool markCells = true);
 	bool CheckSequencesInRange(int minCol, int maxCol, int maxRow);
 
-	bool AreNeighbours(const Point &p1, const Point &p2) const;
-
-	void Swap(int x1, int y1, int x2, int y2);
-	void Swap(const Point &p1, const Point &p2);
+	bool AreNeighbours(const Point &index1, const Point &index2) const;
+	
+	void Swap(const Point &index1, const Point &index2);
+	void Swap(int row1, int col1, int row2, int col2);
 
 	void DoExplosion(int &minCol, int &maxCol, int &maxRow);
 
 private:
-	void ReplaceWithNewCell(int row, int col);
 	void InitData();
 	void InitCellSize();
-	void InitMatrix();
 	void InitShapeCollection();
-	void DeleteMatrix();
-	void DeleteShapeCollection();
-	void RollCellsUp(int row, int col);
-
-	Cell *InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const;
-
-	void CalcCellLocation(int i, int j, Point &topLeft, Point &bottomRight) const;
-
-	bool SequenceByIndex(int x1, int y1, int x2, int y2, int x3, int y3,  bool markCell);
-	bool IsInMatrix(int x, int y) const;
+	void InitMatrix();
 
 	Shape *RandomShape() const;
+
+	void DeleteShapeCollection();
+	void DeleteMatrix();
+
+	Cell *InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const;
+	void ReplaceWithNewCell(int row, int col);
+
+	void CalcCellLocation(int row, int col, Point &topLeft, Point &bottomRight) const;
+	
+	bool IsInMatrix(int row, int col) const;
+	bool SequenceByIndex(int row1, int col1, int row2, int col2, int row3, int col3, bool markCells);
+
+	void RollCellsUp(int row, int col);
 
 	Cell ***m_Matrix;
 	Shape **m_ShapesCollection;
