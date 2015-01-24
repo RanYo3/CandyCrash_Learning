@@ -66,6 +66,7 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	m_Background = new CBrush(RGB(240, 255, 240));
 	m_BoundaryOut = new CBrush(RGB(0, 0, 0));
 	m_BoundaryIn = new CBrush(RGB(255, 255, 255));
+	m_sequenceEvent = false;
 }
 
 CCandyCrashDlg::~CCandyCrashDlg()
@@ -268,24 +269,14 @@ void CCandyCrashDlg::OnPaint()
 		dc.SelectObject(m_DefaultPen);
 		PaintBoard(dc);
 
-		//// Triangle
-		//Sh_Triangle tri(Point(50, 50), Point(200, 200));
-		////PaintCell(
-		//PaintShape(&tri, dc);
-
-		//// Ellipse
-		//Sh_Ellipse elli(Point(50, 200), Point(200, 300));
-		//PaintShape(&elli, dc);
-
-		//// Rectangle
-		//Sh_Rectangle rect(Point(200, 50), Point(300, 200));
-		//PaintShape(&rect, dc);
-
-		//// Diamond
-		//Sh_Diamond dia(Point(200, 200), Point(300, 300));
-		//PaintShape(&dia, dc);
-
 		CDialogEx::OnPaint();
+
+		if (m_sequenceEvent)
+		{
+			SequenceEventAfterSwap();
+			Sleep(500);
+			Invalidate();
+		}
 	}
 }
 
@@ -316,29 +307,11 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
 				m_Board->Swap(index, m_SelectedCell);
-				bool validMove = false;
-				if (m_Board->CheckSequence(m_SelectedCell, false, true))
+				m_sequenceEvent = (m_Board->CheckSequence(index) +				// The '+' is instead of || in order to force initiation of...
+								   m_Board->CheckSequence(m_SelectedCell));		// both checkSequence() functions regardless of their outcome.
+				if (!m_sequenceEvent)
 				{
-					validMove = true;
-				}
-				if (m_Board->CheckSequence(index, false, true))
-				{
-					validMove = true;
-				}
-				if (!validMove)
-				{
-					m_Board->Swap(index, m_SelectedCell);
-				}
-				else
-				{
-					int minCol;
-					int maxCol;
-					int maxRow;
-					do
-					{
-						m_Board->DoExplosion(minCol, maxCol, maxRow);
-					}
-					while (m_Board->CheckSequencesInRange(minCol, maxCol, maxRow));
+					m_Board->Swap(index, m_SelectedCell);						//Will revert swap if there is no sequence
 				}
 				m_SelectedCell = NULL_POINT;
 			}
@@ -357,4 +330,20 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 
 	Invalidate();
+}
+
+void CCandyCrashDlg::SequenceEventAfterSwap()
+{
+	m_sequenceEvent=false;
+
+	int minCol;
+	int maxCol;
+	int maxRow;
+
+	m_Board->DoExplosion(minCol, maxCol, maxRow);
+
+	if (m_Board->CheckSequencesInRange(minCol, maxCol, maxRow))
+	{
+		m_sequenceEvent=true;
+	}
 }

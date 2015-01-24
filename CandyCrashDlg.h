@@ -33,10 +33,12 @@ private:
 	CBrush *m_BoundaryOut;
 	CBrush *m_BoundaryIn;
 	Point m_SelectedCell;
+	bool m_sequenceEvent;
 	
 	void PaintShape(Shape *shape, CPaintDC &dc) const;
 	void PaintCell(Cell *cell, CPaintDC &dc) const;
 	void PaintBoard(CPaintDC &dc) const;
+	void SequenceEventAfterSwap();
 
 // Implementation
 protected:

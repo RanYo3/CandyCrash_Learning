@@ -221,7 +221,7 @@ void Board::InitMatrix()
 			m_Matrix[i][j] = InitCell(tempShape, cellTopLeft, cellBottomRight);
 			delete tempShape;
 
-			while (CheckSequence(j,i, true))
+			while (CheckSequence(j, i, true, false))
 			{
 				delete m_Matrix[i][j];
 
