@@ -22,8 +22,8 @@ public:
 	Cell *GetCell(int row, int col) const;
 	Cell *GetCell(const Point &index) const;
 	bool GetCellIndex(const Point &locationInWindow, Point &index) const;
-	bool CheckSequence(const Point &index, bool initialMatrix, bool markCells);
-	bool CheckSequence(int x, int y, bool initialMatrix = false, bool markCells = false);
+	bool CheckSequence(const Point &index, bool initialMatrix = false, bool markCells = true);
+	bool CheckSequence(int x, int y, bool initialMatrix = false, bool markCells = true);
 	bool CheckSequencesInRange(int minCol, int maxCol, int maxRow);
 
 	bool AreNeighbours(const Point &p1, const Point &p2) const;

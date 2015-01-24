@@ -289,14 +289,11 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
 				m_Board->Swap(index, m_SelectedCell);
-				if (!m_Board->CheckSequence(m_SelectedCell, false, true) && 
-					!m_Board->CheckSequence(index, false, true))				//Will not commit swap if there is no sequence
+				m_sequenceEvent = (m_Board->CheckSequence(index) +				// The '+' is instead of || in order to force initiation of...
+								   m_Board->CheckSequence(m_SelectedCell));		// both checkSequence() functions regardless of their outcome.
+				if (!m_sequenceEvent)
 				{
-					m_Board->Swap(index, m_SelectedCell);
-				}
-				else
-				{
-					m_sequenceEvent=true;
+					m_Board->Swap(index, m_SelectedCell);						//Will revert swap if there is no sequence
 				}
 				m_SelectedCell = NULL_POINT;
 			}
