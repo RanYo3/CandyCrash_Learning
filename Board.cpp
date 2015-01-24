@@ -196,7 +196,7 @@ void Board::InitShapeCollection()
 	m_ShapesCollection[ST_Plus]      = new Sh_Plus     (GREEN_DARK    );
 	m_ShapesCollection[ST_Minus]     = new Sh_Minus    (CYAN          );
 	m_ShapesCollection[ST_Star]      = new Sh_Star     (BLUE          );
-	m_ShapesCollection[ST_X]         = new Sh_X        (MAGENTA       );
+	m_ShapesCollection[ST_X]         = new Sh_X        (PINK_LIGHT    );
 }
 
 void Board::InitMatrix()

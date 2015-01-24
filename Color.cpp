@@ -47,9 +47,9 @@ bool Color::operator!=(const Color &other) const
 	return !(*this == other);
 }
 
-COLORREF Color::GetColorRef() const
+COLORREF Color::GetColorRef(const Color &color)
 {
-	return RGB(m_R, m_G, m_B);
+	return RGB(color.m_R, color.m_G, color.m_B);
 }
 
 void Color::SetRGB(int r, int g, int b)

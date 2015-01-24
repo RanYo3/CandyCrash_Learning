@@ -6,9 +6,16 @@
 
 #include "Board.h"
 
-#define NULL_POINT Point(-1, -1)
+// Visual definitions
 #define BOUNDARY_OUT_STROKE 20
-#define BOUNDARY_IN_STROKE 10
+#define BOUNDARY_IN_STROKE  10
+#define BOARD_SIZE          10
+#define BOARD_TOPLEFT       Point(50, 50)
+#define BOARD_BOTTOMRIGHT   Point(650, 650)
+#define NULL_POINT          Point(-1, -1)
+#define THIN_PEN_WIDTH      1
+#define THICK_PEN_WIDTH     5
+#define DELAY_TIME_MS       1000
 
 // CCandyCrashDlg dialog
 class CCandyCrashDlg : public CDialogEx

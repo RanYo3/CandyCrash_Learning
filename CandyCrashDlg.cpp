@@ -59,13 +59,17 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_SelectedCell(NULL_POINT)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_Board = new Board(10, Point(50, 50), Point(650, 650));
-	m_DefaultPen = new CPen(PS_SOLID, 1, RGB(0,0,0));
-	m_SelectedPen = new CPen(PS_SOLID, 5, RGB(0,0,0));
-	m_MarkPen = new CPen(PS_SOLID, 2, RGB(0,255,0));
-	m_Background = new CBrush(RGB(240, 255, 240));
-	m_BoundaryOut = new CBrush(RGB(0, 0, 0));
-	m_BoundaryIn = new CBrush(RGB(255, 255, 255));
+
+	m_Board = new Board(BOARD_SIZE, BOARD_TOPLEFT, BOARD_BOTTOMRIGHT);
+
+	m_DefaultPen  = new CPen(PS_SOLID, THIN_PEN_WIDTH , Color::GetColorRef(BLACK));
+	m_SelectedPen = new CPen(PS_SOLID, THICK_PEN_WIDTH, Color::GetColorRef(BLACK));
+	m_MarkPen     = new CPen(PS_SOLID, THICK_PEN_WIDTH, Color::GetColorRef(MAGENTA));
+
+	m_Background  = new CBrush(Color::GetColorRef(HONEYDUE));
+	m_BoundaryOut = new CBrush(Color::GetColorRef(BLACK));
+	m_BoundaryIn  = new CBrush(Color::GetColorRef(WHITE));
+
 	m_sequenceEvent = false;
 }
 
@@ -156,7 +160,7 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 	Point *_poly      = shape->GetPolygon();
 	ShapeType sh_type = shape->GetType();
 	
-	CBrush shapeClr(shape->GetColor().GetColorRef());
+	CBrush shapeClr(Color::GetColorRef(shape->GetColor()));
 	CBrush *oldBrush = dc.SelectObject(&shapeClr);
 
 	if (sh_type == ST_Ellipse)
@@ -274,7 +278,7 @@ void CCandyCrashDlg::OnPaint()
 		if (m_sequenceEvent)
 		{
 			SequenceEventAfterSwap();
-			Sleep(500);
+			Sleep(DELAY_TIME_MS);
 			Invalidate();
 		}
 	}
@@ -307,8 +311,8 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
 				m_Board->Swap(index, m_SelectedCell);
-				m_sequenceEvent = (m_Board->CheckSequence(index) +				// The '+' is instead of || in order to force initiation of...
-								   m_Board->CheckSequence(m_SelectedCell));		// both checkSequence() functions regardless of their outcome.
+				m_sequenceEvent = ((int)m_Board->CheckSequence(index) +				// The '+' is instead of || in order to force initiation of...
+								   (int)m_Board->CheckSequence(m_SelectedCell));	// both checkSequence() functions regardless of their outcome.
 				if (!m_sequenceEvent)
 				{
 					m_Board->Swap(index, m_SelectedCell);						//Will revert swap if there is no sequence

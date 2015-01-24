@@ -26,6 +26,9 @@
 #define CREAM			Color(255, 253, 208)
 #define GREEN_DARK		Color( 34, 139,  34)
 #define HONEYDUE		Color(240, 255, 240)
+#define PINK_LIGHT		Color(255, 179, 222)
+#define PINK_ROSE		Color(255, 102, 204)
+#define PINK_HOT		Color(255, 105, 180)
 
 class Color
 {
@@ -40,7 +43,7 @@ public:
 	bool operator==(const Color &other) const;
 	bool operator!=(const Color &other) const;
 
-	COLORREF GetColorRef() const;
+	static COLORREF GetColorRef(const Color &color);
 
 	void SetRGB(int r, int g, int b);
 
