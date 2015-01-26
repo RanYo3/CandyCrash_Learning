@@ -39,8 +39,29 @@ Board::Board(const Board &other)
 {
 	m_Rows = other.m_Rows;
 	m_Cols = other.m_Cols;
-	InitData();
+	m_TopLeft = other.m_TopLeft;
+	m_BottomRight = other.m_BottomRight;
+	m_CellSizeX = other.m_CellSizeX;
+	m_CellSizeY = other.m_CellSizeY;
+
+	
+	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
+	for (int i = 0; i < NUM_OF_SHAPES; i++)
+	{
+		m_ShapesCollection[i] = other.m_ShapesCollection[i]->Clone();
+	}
+
+	m_Matrix = new Cell**[m_Rows];
+	for (int row = 0; row < m_Rows; row++)
+	{
+		m_Matrix[row] = new Cell*[m_Cols];
+		for (int col = 0; col < m_Cols; col++)
+		{
+			m_Matrix[row][col] = new Cell(*other.m_Matrix[row][col]);
+		}
+	}
 }
+
 
 const Board &Board::operator=(const Board &other)
 {

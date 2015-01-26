@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "UndoRedoManager.cpp"
 #include "Board.h"
 
 // Visual definitions
@@ -15,7 +15,7 @@
 #define NULL_POINT          Point(-1, -1)
 #define THIN_PEN_WIDTH      1
 #define THICK_PEN_WIDTH     5
-#define DELAY_TIME_MS       1000
+#define DELAY_TIME_MS       300
 
 // CCandyCrashDlg dialog
 class CCandyCrashDlg : public CDialogEx
@@ -41,6 +41,7 @@ private:
 	CBrush *m_BoundaryIn;
 	Point m_SelectedCell;
 	bool m_sequenceEvent;
+	UndoRedoManager<Board *> m_UR_Manager;
 	
 	void PaintShape(Shape *shape, CPaintDC &dc) const;
 	void PaintCell(Cell *cell, CPaintDC &dc) const;
@@ -59,4 +60,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	CButton m_UndoBtn;
+	CButton m_RedoBtn;
+	afx_msg void OnClickedRedoBtn();
+	afx_msg void OnClickedUndoBtn();
 };

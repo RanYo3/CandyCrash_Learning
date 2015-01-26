@@ -96,6 +96,8 @@ CCandyCrashDlg::~CCandyCrashDlg()
 void CCandyCrashDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_UndoBtn, m_UndoBtn);
+	DDX_Control(pDX, IDC_RedoBtn, m_RedoBtn);
 }
 
 BEGIN_MESSAGE_MAP(CCandyCrashDlg, CDialogEx)
@@ -103,6 +105,8 @@ BEGIN_MESSAGE_MAP(CCandyCrashDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_LBUTTONDOWN()
+	ON_BN_CLICKED(IDC_RedoBtn, &CCandyCrashDlg::OnClickedRedoBtn)
+	ON_BN_CLICKED(IDC_UndoBtn, &CCandyCrashDlg::OnClickedUndoBtn)
 END_MESSAGE_MAP()
 
 
@@ -138,6 +142,13 @@ BOOL CCandyCrashDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+	CImage UndoIMG;
+	CImage RedoIMG;
+	UndoIMG.Load( _T("edit_undo.png"));
+	RedoIMG.Load( _T("edit_redo.png"));
+	m_UndoBtn.SetBitmap(UndoIMG);
+	m_RedoBtn.SetBitmap(RedoIMG);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -267,13 +278,16 @@ void CCandyCrashDlg::OnPaint()
 	}
 	else
 	{
+
 		CPaintDC dc(this);
-		
+
 		dc.SelectObject(m_Background);
 		dc.SelectObject(m_DefaultPen);
+
 		PaintBoard(dc);
 
 		CDialogEx::OnPaint();
+		
 
 		if (m_sequenceEvent)
 		{
@@ -310,12 +324,14 @@ void CCandyCrashDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			if (m_Board->AreNeighbours(index, m_SelectedCell))
 			{
+				m_UR_Manager.AddNew(new Board(*m_Board));					//save current board status for future undo action
 				m_Board->Swap(index, m_SelectedCell);
 				m_sequenceEvent = (m_Board->CheckSequence(index) +			// The '+' is instead of || in order to force initiation of...
 								   m_Board->CheckSequence(m_SelectedCell));	// both checkSequence() functions regardless of their outcome.
 				if (!m_sequenceEvent)
 				{
-					m_Board->Swap(index, m_SelectedCell);						//Will revert swap if there is no sequence
+					m_Board->Swap(index, m_SelectedCell);					//Will revert swap if there is no sequence
+					m_UR_Manager.DeleteLastReceived();						//Will Delete last saved board from Undo fuanction
 				}
 				m_SelectedCell = NULL_POINT;
 			}
@@ -350,4 +366,32 @@ void CCandyCrashDlg::SequenceEventAfterSwap()
 	{
 		m_sequenceEvent=true;
 	}
+	else
+	{
+		m_UR_Manager.EmptyRecycled();
+	}
+
 }
+
+
+void CCandyCrashDlg::OnClickedRedoBtn()
+{
+	if (!m_UR_Manager.RecycleIsEmpty())
+	{
+		m_UR_Manager.AddNew(new Board(*m_Board));
+		m_Board = m_UR_Manager.Redo();
+		Invalidate();
+	}
+}
+
+
+void CCandyCrashDlg::OnClickedUndoBtn()
+{
+	if (!m_UR_Manager.ObjectsInUseIsEmpty())
+	{
+		m_UR_Manager.AddToRecycled(new Board(*m_Board));
+		m_Board = m_UR_Manager.Undo();
+		Invalidate();
+	}
+}
+

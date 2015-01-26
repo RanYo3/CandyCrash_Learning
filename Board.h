@@ -57,6 +57,7 @@ private:
 
 	void RollCellsUp(int row, int col);
 
+
 	Cell ***m_Matrix;
 	Shape **m_ShapesCollection;
 	int m_Rows;
