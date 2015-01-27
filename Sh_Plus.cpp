@@ -1,64 +1,20 @@
 #include "stdafx.h"
 #include "Sh_Plus.h"
 
-Sh_Plus::Sh_Plus()
-	: Shape(ST_Plus)
-{
-	InitPolygon();
-}
-
-Sh_Plus::~Sh_Plus()
-{
-}
-
-Sh_Plus::Sh_Plus(Color color)
-	: Shape(ST_Plus, color)
-{
-	InitPolygon();
-}
-
-Sh_Plus::Sh_Plus(const Point &topLeft, const Point &bottomRight)
-	: Shape(topLeft, bottomRight, ST_Plus)
-{
-	InitPolygon();
-}
-
-Sh_Plus::Sh_Plus(const Point &topLeft, const Point &bottomRight, Color color)
-	: Shape(topLeft, bottomRight, ST_Plus, color)
-{
-	InitPolygon();
-}
+Sh_Plus::Sh_Plus(Color color, ShapeType type, int polygonSize) 
+	: Sh_Minus(color, type, polygonSize) { }
 
 Sh_Plus::Sh_Plus(const Sh_Plus &other)
-	: Shape(other)
-{
-	InitPolygon();
-}
-
-const Sh_Plus &Sh_Plus::operator=(const Sh_Plus &other)
-{
-	if (&other != this)
-	{
-		Shape::operator=(other);
-		InitPolygon();
-	}
-
-	return *this;
-}
-
-int Sh_Plus::GetPolygonSize() const
-{
-	return PLUS_SIZE;
-}
+	: Sh_Minus(other) { }
 
 Shape *Sh_Plus::Clone() const
 {
 	return new Sh_Plus(*this);
 }
 
-Point *Sh_Plus::CreatePolygon() const
+void Sh_Plus::BuildPolygon()
 {
-	Point *poly = new Point[PLUS_SIZE];
+	Point *poly = GetPolygon();
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
@@ -77,6 +33,4 @@ Point *Sh_Plus::CreatePolygon() const
 	poly[9]  = Point(topLeft.GetX()            , bottomRight.GetY() - partY);
 	poly[10] = Point(topLeft.GetX()            , topLeft.GetY()     + partY);
 	poly[11] = Point(topLeft.GetX()     + partX, topLeft.GetY()     + partY);
-
-	return poly;
 }

@@ -11,40 +11,40 @@ enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Plus, ST_
 class Shape
 {
 public:
-	Shape(ShapeType type = ST_Unknown, Color color = BLACK);
+	Shape(Color color = BLACK, ShapeType type = ST_Unknown, int polygonSize = 0);
 	virtual ~Shape();
 
-	Shape(const Point &topLeft, const Point &bottomRight, ShapeType type, Color color = BLACK);
 	Shape(const Shape &other);
 	const Shape &operator=(const Shape &other);
 
 	bool operator==(const Shape &other) const;
 	bool operator!=(const Shape &other) const;
 
-	const Point &GetTopLeft() const;
-	const Point &GetBottomRight() const;
 	const Color &GetColor() const;
 	ShapeType GetType() const;
 
+	const Point &GetTopLeft() const;
+	const Point &GetBottomRight() const;
+	
+	void SetColor(const Color &color);
 	void SetTopLeft(const Point &topLeft);
 	void SetBottomRight(const Point &bottomRight);
-	void SetColor(const Color &color);
 
-	virtual Point *GetPolygon() const;
+	int GetPolygonSize() const;
 
-	virtual int GetPolygonSize() const = 0;
-
+	Point *GetPolygon() const;
+	
 	virtual Shape *Clone() const = 0;
 
-protected:
-	void InitPolygon();
-
-	virtual Point *CreatePolygon() const = 0;
+	virtual void BuildPolygon() = 0;
 
 private:
-	ShapeType m_Type;
 	Color m_Color;
+	ShapeType m_Type;
+
+	int m_PolygonSize;
+	Point *m_Polygon;
+
 	Point m_TopLeft;
 	Point m_BottomRight;
-	Point *m_Polygon;
 };

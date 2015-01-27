@@ -12,7 +12,6 @@ public:
 	Board(int matrixSize = MATRIX_SIZE, const Point &topLeft = DEFAULT_POINT, const Point &bottomRight = DEFAULT_POINT);
 	~Board();
 
-	Board(int rows, int cols);
 	Board(const Board &other);
 	const Board &operator=(const Board &other);
 
@@ -56,7 +55,6 @@ private:
 	bool SequenceByIndex(int row1, int col1, int row2, int col2, int row3, int col3, bool markCells);
 
 	void RollCellsUp(int row, int col);
-
 
 	Cell ***m_Matrix;
 	Shape **m_ShapesCollection;

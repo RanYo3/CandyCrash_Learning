@@ -29,12 +29,6 @@ Board::~Board()
 	}
 }
 
-Board::Board(int rows, int cols)
-	: m_Rows(rows), m_Cols(cols)
-{
-	InitData();
-}
-
 Board::Board(const Board &other)
 {
 	m_Rows = other.m_Rows;
@@ -61,7 +55,6 @@ Board::Board(const Board &other)
 		}
 	}
 }
-
 
 const Board &Board::operator=(const Board &other)
 {
@@ -316,7 +309,10 @@ Cell *Board::InitCell(Shape *shape, const Point &topLeft, const Point &bottomRig
 	shape->SetTopLeft(topLeft + MARGIN);
 	shape->SetBottomRight(bottomRight - MARGIN);
 
-	return new Cell(shape->Clone(), topLeft, bottomRight);
+	Shape *newShape = shape->Clone();
+	newShape->BuildPolygon();
+
+	return new Cell(newShape, topLeft, bottomRight);
 }
 
 void Board::ReplaceWithNewCell(int row, int col)

@@ -3,26 +3,17 @@
 #include "Shape.h"
 #include "Point.h"
 #include "Color.h"
+#include "Sh_Minus.h"
 
 #define PLUS_SIZE 12
 #define PART_SIZE 3
 
-class Sh_Plus : public Shape
+class Sh_Plus : public Sh_Minus
 {
 public:
-	Sh_Plus();
-	virtual ~Sh_Plus();
-
-	Sh_Plus(Color color);
-	Sh_Plus(const Point &topLeft, const Point &bottomRight);
-	Sh_Plus(const Point &topLeft, const Point &bottomRight, Color color);
+	Sh_Plus(Color color = BLACK, ShapeType type = ST_Plus, int polygonSize = PLUS_SIZE);
 	Sh_Plus(const Sh_Plus &other);
-	const Sh_Plus &operator=(const Sh_Plus &other);
-
-	virtual int GetPolygonSize() const;
-
+	
 	virtual Shape *Clone() const;
-
-private:
-	virtual Point *CreatePolygon() const;
+	virtual void BuildPolygon();
 };

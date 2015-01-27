@@ -378,7 +378,7 @@ void CCandyCrashDlg::OnClickedRedoBtn()
 {
 	if (!m_UR_Manager.RecycleIsEmpty())
 	{
-		m_UR_Manager.AddNew(new Board(*m_Board));
+		m_UR_Manager.AddNew(m_Board);
 		m_Board = m_UR_Manager.Redo();
 		Invalidate();
 	}
@@ -389,7 +389,7 @@ void CCandyCrashDlg::OnClickedUndoBtn()
 {
 	if (!m_UR_Manager.ObjectsInUseIsEmpty())
 	{
-		m_UR_Manager.AddToRecycled(new Board(*m_Board));
+		m_UR_Manager.AddToRecycled(m_Board);
 		m_Board = m_UR_Manager.Undo();
 		Invalidate();
 	}
