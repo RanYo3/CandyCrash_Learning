@@ -11,7 +11,7 @@
 class Sh_Minus : public Sh_Triangle
 {
 public:
-	Sh_Minus(Color color = BLACK, ShapeType type = ST_Minus, int polygonSize = MINUS_SIZE);
+	Sh_Minus(const Color &color = BLACK, ShapeType type = ST_Minus, int polygonSize = MINUS_SIZE);
 	Sh_Minus(const Sh_Minus &other);
 	
 	virtual Shape *Clone() const;

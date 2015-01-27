@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Sh_Diamond.h"
 
-Sh_Diamond::Sh_Diamond(Color color, ShapeType type, int polygonSize) 
+Sh_Diamond::Sh_Diamond(const Color &color, ShapeType type, int polygonSize) 
 	: Sh_Rectangle(color, type, polygonSize) { }
 
 Sh_Diamond::Sh_Diamond(const Sh_Diamond &other)

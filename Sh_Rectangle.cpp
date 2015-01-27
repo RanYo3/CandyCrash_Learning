@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Sh_Rectangle.h"
 
-Sh_Rectangle::Sh_Rectangle(Color color, ShapeType type, int polygonSize) 
+Sh_Rectangle::Sh_Rectangle(const Color &color, ShapeType type, int polygonSize) 
 	: Sh_Ellipse(color, type, polygonSize) { }
 
 Sh_Rectangle::Sh_Rectangle(const Sh_Rectangle &other) 

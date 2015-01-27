@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shape.h"
 
-Shape::Shape(Color color, ShapeType type, int polygonSize)
+Shape::Shape(const Color &color, ShapeType type, int polygonSize)
 	: m_Color(color), m_Type(type), m_PolygonSize(polygonSize), m_TopLeft(), m_BottomRight()
 {
 	m_Polygon = new Point[m_PolygonSize];

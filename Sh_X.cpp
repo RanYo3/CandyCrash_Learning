@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Sh_X.h"
 
-Sh_X::Sh_X(Color color, ShapeType type, int polygonSize) 
+Sh_X::Sh_X(const Color &color, ShapeType type, int polygonSize) 
 	: Sh_Plus(color, type, polygonSize) { }
 
 Sh_X::Sh_X(const Sh_X &other)

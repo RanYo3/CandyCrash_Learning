@@ -9,7 +9,7 @@
 class Sh_Ellipse : public Shape
 {
 public:
-	Sh_Ellipse(Color color = BLACK, ShapeType type = ST_Ellipse, int polygonSize = ELPS_SIZE);
+	Sh_Ellipse(const Color &color = BLACK, ShapeType type = ST_Ellipse, int polygonSize = ELPS_SIZE);
 	Sh_Ellipse(const Sh_Ellipse &other);
 
 	virtual Shape *Clone() const;
