@@ -11,7 +11,7 @@ enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Plus, ST_
 class Shape : public CObject
 {
 public:
-	Shape(Color color = BLACK, ShapeType type = ST_Unknown, int polygonSize = 0);
+	Shape(const Color &color = BLACK, ShapeType type = ST_Unknown, int polygonSize = 0);
 	virtual ~Shape();
 
 	Shape(const Shape &other);

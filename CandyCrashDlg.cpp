@@ -56,7 +56,7 @@ END_MESSAGE_MAP()
 
 
 CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CCandyCrashDlg::IDD, pParent), m_SelectedCell(NULL_POINT)
+	: CDialogEx(CCandyCrashDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -69,6 +69,8 @@ CCandyCrashDlg::CCandyCrashDlg(CWnd* pParent /*=NULL*/)
 	m_Background  = new CBrush(Color::GetColorRef(HONEYDUE));
 	m_BoundaryOut = new CBrush(Color::GetColorRef(BLACK));
 	m_BoundaryIn  = new CBrush(Color::GetColorRef(WHITE));
+
+	m_SelectedCell = NULL_POINT;
 
 	m_sequenceEvent = false;
 }

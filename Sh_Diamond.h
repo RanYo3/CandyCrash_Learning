@@ -12,7 +12,7 @@ class Sh_Diamond : public Sh_Rectangle
 	DECLARE_SERIAL (Sh_Diamond)
 
 public:
-	Sh_Diamond(Color color = BLACK, ShapeType type = ST_Diamond, int polygonSize = DMND_SIZE);
+	Sh_Diamond(const Color &color = BLACK, ShapeType type = ST_Diamond, int polygonSize = DMND_SIZE);
 	Sh_Diamond(const Sh_Diamond &other);
 	
 	virtual Shape *Clone() const;

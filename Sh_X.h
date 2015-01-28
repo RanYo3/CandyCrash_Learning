@@ -13,7 +13,7 @@ class Sh_X : public Sh_Plus
 	DECLARE_SERIAL (Sh_X)
 
 public:
-	Sh_X(Color color = BLACK, ShapeType type = ST_X, int polygonSize = SHX_SIZE);
+	Sh_X(const Color &color = BLACK, ShapeType type = ST_X, int polygonSize = SHX_SIZE);
 	Sh_X(const Sh_X &other);
 	
 	virtual Shape *Clone() const;

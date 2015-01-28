@@ -3,7 +3,7 @@
 
 IMPLEMENT_SERIAL(Sh_Minus, CObject, 1)
 
-Sh_Minus::Sh_Minus(Color color, ShapeType type, int polygonSize) 
+Sh_Minus::Sh_Minus(const Color &color, ShapeType type, int polygonSize)
 	: Sh_Triangle(color, type, polygonSize) { }
 
 Sh_Minus::Sh_Minus(const Sh_Minus &other)

@@ -14,7 +14,7 @@ class Sh_Star : public Sh_X
 	DECLARE_SERIAL (Sh_Star)
 
 public:
-	Sh_Star(Color color = BLACK, ShapeType type = ST_Star, int polygonSize = STAR_SIZE);
+	Sh_Star(const Color &color = BLACK, ShapeType type = ST_Star, int polygonSize = STAR_SIZE);
 	Sh_Star(const Sh_Star &other);
 	
 	virtual Shape *Clone() const;

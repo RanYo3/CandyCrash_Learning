@@ -3,7 +3,7 @@
 
 IMPLEMENT_SERIAL(Sh_Star, CObject, 1)
 
-Sh_Star::Sh_Star(Color color, ShapeType type, int polygonSize) 
+Sh_Star::Sh_Star(const Color &color, ShapeType type, int polygonSize)
 	: Sh_X(color, type, polygonSize) { }
 
 Sh_Star::Sh_Star(const Sh_Star &other)

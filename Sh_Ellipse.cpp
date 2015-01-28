@@ -3,7 +3,7 @@
 
 IMPLEMENT_SERIAL(Sh_Ellipse, CObject, 1)
 
-Sh_Ellipse::Sh_Ellipse(Color color, ShapeType type, int polygonSize) 
+Sh_Ellipse::Sh_Ellipse(const Color &color, ShapeType type, int polygonSize)
 	: Shape(color, type, polygonSize) { }
 
 Sh_Ellipse::Sh_Ellipse(const Sh_Ellipse &other)
