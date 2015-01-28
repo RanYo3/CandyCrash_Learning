@@ -53,6 +53,7 @@ private:
 
 	Cell *InitCell(Shape *shape, const Point &topLeft, const Point &bottomRight) const;
 	void ReplaceWithNewCell(int row, int col);
+	Cell *GetSpecificShapeCell(Cell *oldCell);
 
 	void CalcCellLocation(int row, int col, Point &topLeft, Point &bottomRight) const;
 	

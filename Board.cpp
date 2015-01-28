@@ -265,16 +265,17 @@ void Board::Serialize(CArchive& archive)
 	m_TopLeft.Serialize(archive);
 	m_BottomRight.Serialize(archive);
 	
-	for (int i = 0; i < NUM_OF_SHAPES; i++)
-	{
-		m_ShapesCollection[i]->Serialize(archive);
-	}
+	InitShapeCollection();
 	
 	for (int row = 0; row < m_Rows; row++)
 	{
 		for (int col = 0; col < m_Cols; col++)
 		{
 			m_Matrix[row][col]->Serialize(archive);
+			if (archive.IsLoading())
+			{
+				m_Matrix[row][col] = GetSpecificShapeCell(m_Matrix[row][col]);
+			}
 		}
 	}
 }
@@ -389,6 +390,17 @@ void Board::ReplaceWithNewCell(int row, int col)
 
 	m_Matrix[row][col] = InitCell(tempShape, topLeft , bottomRight);
 	delete tempShape;
+}
+
+Cell *Board::GetSpecificShapeCell(Cell *oldCell)
+{
+	Shape *tempShape = m_ShapesCollection[oldCell->GetShape()->GetType()]->Clone();
+	Cell *newCell = InitCell(tempShape, oldCell->GetTopLeft(), oldCell->GetBottomRight());
+
+	delete tempShape;
+	delete oldCell;
+
+	return newCell;
 }
 
 void Board::CalcCellLocation(int row, int col, Point &topLeft, Point &bottomRight) const

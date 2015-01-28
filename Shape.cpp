@@ -116,20 +116,13 @@ void Shape::Serialize( CArchive& archive )
 	{
 		int type = (int)m_Type;
         archive << type;
-		archive << m_PolygonSize;
 	}
     else
 	{
 		int type;
         archive >> type;
-		archive >> m_PolygonSize;
 		m_Type = (ShapeType) type;
 	}
-
-	m_TopLeft.Serialize(archive);
-	m_BottomRight.Serialize(archive);
-	m_Color.Serialize(archive);
-	m_Polygon.Serialize(archive);
 }
 
 void Shape::SetPolygon(const CTypedPtrArray<CObArray, Point *> &srcPoly)

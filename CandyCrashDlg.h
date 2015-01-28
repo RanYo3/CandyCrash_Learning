@@ -19,6 +19,7 @@
 #define THIN_PEN_WIDTH      1
 #define THICK_PEN_WIDTH     5
 #define DELAY_TIME_MS       300
+#define ARCHIVE_FILE_NAME	"candy.crash"
 
 // CCandyCrashDlg dialog
 class CCandyCrashDlg : public CDialogEx
@@ -50,6 +51,7 @@ private:
 	void PaintCell(Cell *cell, CPaintDC &dc) const;
 	void PaintBoard(CPaintDC &dc) const;
 	void SequenceEventAfterSwap();
+	void DeleteURManager();
 
 // Implementation
 protected:

@@ -100,17 +100,7 @@ CCandyCrashDlg::~CCandyCrashDlg()
 	{
 		delete m_BoundaryIn;
 	}
-	Board *board;
-	while (!m_UR_Manager.RecycleIsEmpty())
-	{
-		board = m_UR_Manager.Redo();
-		delete board;
-	}
-	while (!m_UR_Manager.ObjectsInUseIsEmpty())
-	{
-		board = m_UR_Manager.Undo();
-		delete board;
-	}
+	DeleteURManager();
 }
 
 void CCandyCrashDlg::DoDataExchange(CDataExchange* pDX)
@@ -404,6 +394,21 @@ void CCandyCrashDlg::SequenceEventAfterSwap()
 
 }
 
+void CCandyCrashDlg::DeleteURManager()
+{
+	Board *board;
+	while (!m_UR_Manager.RecycleIsEmpty())
+	{
+		board = m_UR_Manager.Redo();
+		delete board;
+	}
+	while (!m_UR_Manager.ObjectsInUseIsEmpty())
+	{
+		board = m_UR_Manager.Undo();
+		delete board;
+	}
+}
+
 
 void CCandyCrashDlg::OnClickedRedoBtn()
 {
@@ -430,7 +435,7 @@ void CCandyCrashDlg::OnClickedSaveBtn()
 {
 	CFile theFile;
 
-	theFile.Open(_T("CC_Game"), CFile::modeCreate | CFile::modeWrite);
+	theFile.Open(_T(ARCHIVE_FILE_NAME), CFile::modeCreate | CFile::modeWrite);
 
 	CArchive archive(&theFile, CArchive::store);
 
@@ -443,15 +448,18 @@ void CCandyCrashDlg::OnClickedSaveBtn()
 void CCandyCrashDlg::OnClickedLoadBtn()
 {
 	CFile theFile;
-	if (PathFileExists( _T("CC_Game")))
+	if (PathFileExists( _T(ARCHIVE_FILE_NAME)))
 	{
-		theFile.Open(_T("CC_Game"), CFile::modeRead);
+		theFile.Open(_T(ARCHIVE_FILE_NAME), CFile::modeRead);
 		CArchive archive(&theFile, CArchive::load);
 
 		m_Board->Serialize(archive);
 
 		archive.Close();
 		theFile.Close();
+
+		// delete UndoRedoManager stacks
+		DeleteURManager();
 
 		Invalidate();
 	}
