@@ -14,11 +14,17 @@ Shape *Sh_Triangle::Clone() const
 
 void Sh_Triangle::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
-	poly[0] = Point((topLeft.GetX() + bottomRight.GetX()) / 2, topLeft.GetY());
-	poly[1] = bottomRight;
-	poly[2] = Point(topLeft.GetX(), bottomRight.GetY());
+	poly.Add(new Point((topLeft.GetX() + bottomRight.GetX()) / 2, topLeft.GetY()));
+	poly.Add(new Point(bottomRight));
+	poly.Add(new Point(topLeft.GetX(), bottomRight.GetY()));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Triangle, CObject, 1)

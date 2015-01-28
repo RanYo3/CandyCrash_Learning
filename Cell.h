@@ -3,10 +3,13 @@
 #include "Point.h"
 #include "Shape.h"
 
+#include <afx.h>
+
 #define MARGIN 10
 
-class Cell
+class Cell : public CObject
 {
+	DECLARE_SERIAL(Cell)
 public:
 	Cell();
 	~Cell();
@@ -29,10 +32,12 @@ public:
 	void Select(bool isSelected);
 	void MarkAsSequence();
 
+	void Serialize(CArchive& ar);
+
 private:
 	Shape *m_Shape;
-	Point m_TopLeft;
-	Point m_BottomRight;
+	Point *m_TopLeft;
+	Point *m_BottomRight;
 	bool m_IsSelected;
 	bool m_IsInSequence;
 };

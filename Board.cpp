@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Board.h"
 #include "Sh_Triangle.h"
 #include "Sh_Rectangle.h"
@@ -38,7 +39,6 @@ Board::Board(const Board &other)
 	m_CellSizeX = other.m_CellSizeX;
 	m_CellSizeY = other.m_CellSizeY;
 
-	
 	m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
 	for (int i = 0; i < NUM_OF_SHAPES; i++)
 	{
@@ -64,10 +64,33 @@ const Board &Board::operator=(const Board &other)
 		{
 			DeleteMatrix();
 		}
+		if (m_ShapesCollection != NULL)
+		{
+			DeleteShapeCollection();
+		}
 
 		m_Rows = other.m_Rows;
 		m_Cols = other.m_Cols;
-		InitData();
+		m_TopLeft = other.m_TopLeft;
+		m_BottomRight = other.m_BottomRight;
+		m_CellSizeX = other.m_CellSizeX;
+		m_CellSizeY = other.m_CellSizeY;
+
+		m_ShapesCollection = new Shape*[NUM_OF_SHAPES];
+		for (int i = 0; i < NUM_OF_SHAPES; i++)
+		{
+			m_ShapesCollection[i] = other.m_ShapesCollection[i]->Clone();
+		}
+
+		m_Matrix = new Cell**[m_Rows];
+		for (int row = 0; row < m_Rows; row++)
+		{
+			m_Matrix[row] = new Cell*[m_Cols];
+			for (int col = 0; col < m_Cols; col++)
+			{
+				m_Matrix[row][col] = new Cell(*other.m_Matrix[row][col]);
+			}
+		}
 	}
 
 	return *this;
@@ -179,14 +202,17 @@ void Board::Swap(int row1, int col1, int row2, int col2)
 		return;
 	}
 
-	Cell* cell1 = InitCell(m_Matrix[row1][col1]->GetShape(), m_Matrix[row2][col2]->GetTopLeft(), m_Matrix[row2][col2]->GetBottomRight());
-	Cell* cell2 = InitCell(m_Matrix[row2][col2]->GetShape(), m_Matrix[row1][col1]->GetTopLeft(), m_Matrix[row1][col1]->GetBottomRight());
+	Cell *oldCell1 = m_Matrix[row1][col1];
+	Cell *oldCell2 = m_Matrix[row2][col2];
 
-	delete m_Matrix[row1][col1];
-	delete m_Matrix[row2][col2];
+	Cell *newCell1 = InitCell(oldCell1->GetShape(), oldCell2->GetTopLeft(), oldCell2->GetBottomRight());
+	Cell *newCell2 = InitCell(oldCell2->GetShape(), oldCell1->GetTopLeft(), oldCell1->GetBottomRight());
 
-	m_Matrix[row1][col1] = cell2;
-	m_Matrix[row2][col2] = cell1;
+	delete oldCell1;
+	delete oldCell2;
+
+	m_Matrix[row1][col1] = newCell2;
+	m_Matrix[row2][col2] = newCell1;
 }
 
 void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
@@ -213,6 +239,13 @@ void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
 			}
 		}
 	}
+}
+
+IMPLEMENT_SERIAL(Board, CObject, 1)
+
+void Board::Serialize(CArchive& ar)
+{
+
 }
 
 void Board::InitData()
@@ -284,9 +317,9 @@ Shape *Board::RandomShape() const
 
 void Board::DeleteShapeCollection()
 {
-	for (int row = 0; row < NUM_OF_SHAPES; row++)
+	for (int i = 0; i < NUM_OF_SHAPES; i++)
 	{
-		delete m_ShapesCollection[row];
+		delete m_ShapesCollection[i];
 	}
 	delete[] m_ShapesCollection;
 }
@@ -317,12 +350,14 @@ Cell *Board::InitCell(Shape *shape, const Point &topLeft, const Point &bottomRig
 
 void Board::ReplaceWithNewCell(int row, int col)
 {
+	Shape *tempShape = RandomShape();
 	Point topLeft =  m_Matrix[row][col]->GetTopLeft();
 	Point bottomRight = m_Matrix[row][col]->GetBottomRight();
 
 	delete m_Matrix[row][col];
 
-	m_Matrix[row][col] = InitCell(RandomShape(), topLeft , bottomRight);
+	m_Matrix[row][col] = InitCell(tempShape, topLeft , bottomRight);
+	delete tempShape;
 }
 
 void Board::CalcCellLocation(int row, int col, Point &topLeft, Point &bottomRight) const

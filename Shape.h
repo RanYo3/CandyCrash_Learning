@@ -3,12 +3,15 @@
 #include "Color.h"
 #include "Point.h"
 
+#include <afx.h>
+#include <afxtempl.h>
+
 #define NULL 0
 #define NUM_OF_SHAPES 8
 
 enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Plus, ST_Minus, ST_Star, ST_X, ST_Unknown };
 
-class Shape
+class Shape : public CObject
 {
 public:
 	Shape(const Color &color = BLACK, ShapeType type = ST_Unknown, int polygonSize = 0);
@@ -32,19 +35,26 @@ public:
 
 	int GetPolygonSize() const;
 
-	Point *GetPolygon() const;
+	const CTypedPtrArray<CObArray, Point *> &GetPolygon() const;
+
+	static void DeletePolygon(CTypedPtrArray<CObArray, Point *> &poly);
 	
 	virtual Shape *Clone() const = 0;
 
 	virtual void BuildPolygon() = 0;
 
+	void Serialize(CArchive& ar);
+
+protected:
+	void SetPolygon(const CTypedPtrArray<CObArray, Point *> &srcPoly);
+
 private:
-	Color m_Color;
+	Color *m_Color;
 	ShapeType m_Type;
 
 	int m_PolygonSize;
-	Point *m_Polygon;
+	CTypedPtrArray<CObArray, Point *> m_Polygon;
 
-	Point m_TopLeft;
-	Point m_BottomRight;
+	Point *m_TopLeft;
+	Point *m_BottomRight;
 };

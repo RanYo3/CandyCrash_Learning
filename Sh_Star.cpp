@@ -14,7 +14,7 @@ Shape *Sh_Star::Clone() const
 
 void Sh_Star::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
@@ -24,9 +24,15 @@ void Sh_Star::BuildPolygon()
 	int partX = (int)((double)cellSizeX * PART_HORZ_SIZE);
 	int partY = (int)((double)cellSizeY * PART_VERT_SIZE);
 
-	poly[0] = Point(topLeft.GetX()                    , topLeft.GetY()     + partY);
-	poly[1] = Point(bottomRight.GetX()                , topLeft.GetY()     + partY);
-	poly[2] = Point(topLeft.GetX()     + partX        , bottomRight.GetY()        );
-	poly[3] = Point(topLeft.GetX()     + cellSizeX / 2, topLeft.GetY()            );
-	poly[4] = Point(bottomRight.GetX() - partX        , bottomRight.GetY()        );
+	poly.Add(new Point(topLeft.GetX()                    , topLeft.GetY()     + partY));
+	poly.Add(new Point(bottomRight.GetX()                , topLeft.GetY()     + partY));
+	poly.Add(new Point(topLeft.GetX()     + partX        , bottomRight.GetY()        ));
+	poly.Add(new Point(topLeft.GetX()     + cellSizeX / 2, topLeft.GetY()            ));
+	poly.Add(new Point(bottomRight.GetX() - partX        , bottomRight.GetY()        ));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Star, CObject, 1)

@@ -11,3 +11,5 @@ Shape *Sh_Rectangle::Clone() const
 {
 	return new Sh_Rectangle(*this);
 }
+
+IMPLEMENT_SERIAL(Sh_Rectangle, CObject, 1)

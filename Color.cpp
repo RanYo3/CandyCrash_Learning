@@ -58,3 +58,18 @@ void Color::SetRGB(int r, int g, int b)
 	m_G = g;
 	m_B = b;
 }
+
+IMPLEMENT_SERIAL(Color, CObject, 1)
+
+void Color::Serialize(CArchive& ar)
+{
+    CObject::Serialize(ar);
+    if (ar.IsStoring())
+	{
+        ar << m_R << m_G << m_B;
+	}
+    else
+	{
+        ar >> m_R >> m_G >> m_B;
+	}
+}

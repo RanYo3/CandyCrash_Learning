@@ -7,12 +7,7 @@
 #include "CandyCrashDlg.h"
 #include "afxdialogex.h"
 
-#include "Sh_Triangle.h"
-#include "Sh_Ellipse.h"
-#include "Sh_Rectangle.h"
-#include "Sh_Diamond.h"
-#include "Point.h"
-#include "Cell.h"
+#include "Color.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,6 +88,29 @@ CCandyCrashDlg::~CCandyCrashDlg()
 	{
 		delete m_MarkPen;
 	}
+	if (m_Background != NULL)
+	{
+		delete m_Background;
+	}
+	if (m_BoundaryOut != NULL)
+	{
+		delete m_BoundaryOut;
+	}
+	if (m_BoundaryIn != NULL)
+	{
+		delete m_BoundaryIn;
+	}
+	Board *board;
+	while (!m_UR_Manager.RecycleIsEmpty())
+	{
+		board = m_UR_Manager.Redo();
+		delete board;
+	}
+	while (!m_UR_Manager.ObjectsInUseIsEmpty())
+	{
+		board = m_UR_Manager.Undo();
+		delete board;
+	}
 }
 
 void CCandyCrashDlg::DoDataExchange(CDataExchange* pDX)
@@ -170,7 +188,8 @@ void CCandyCrashDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 {
-	Point *_poly      = shape->GetPolygon();
+	CTypedPtrArray<CObArray, Point *> _poly;
+	_poly.Copy(shape->GetPolygon());
 	ShapeType sh_type = shape->GetType();
 	
 	CBrush shapeClr(Color::GetColorRef(shape->GetColor()));
@@ -178,11 +197,11 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 
 	if (sh_type == ST_Ellipse)
 	{
-		dc.Ellipse(_poly[0].GetX(), _poly[0].GetY(), _poly[1].GetX(), _poly[1].GetY());
+		dc.Ellipse(_poly[0]->GetX(), _poly[0]->GetY(), _poly[1]->GetX(), _poly[1]->GetY());
 	}
 	else if (sh_type == ST_Rectangle)
 	{
-		dc.Rectangle(_poly[0].GetX(), _poly[0].GetY(), _poly[1].GetX(), _poly[1].GetY());
+		dc.Rectangle(_poly[0]->GetX(), _poly[0]->GetY(), _poly[1]->GetX(), _poly[1]->GetY());
 	}
 	else
 	{
@@ -190,7 +209,7 @@ void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 		CPoint *poly = new CPoint[polySize];
 		for (int i = 0; i < polySize; i++)
 		{
-			poly[i] = CPoint(_poly[i].GetX(), _poly[i].GetY());
+			poly[i] = CPoint(_poly[i]->GetX(), _poly[i]->GetY());
 		}
 		dc.Polygon(poly, polySize);
 		delete[] poly;

@@ -14,14 +14,20 @@ Shape *Sh_Minus::Clone() const
 
 void Sh_Minus::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
 	int partY = (int)((double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE);
 
-	poly[0] = Point(bottomRight.GetX(), topLeft.GetY()     + partY);
-	poly[1] = Point(bottomRight.GetX(), bottomRight.GetY() - partY);
-	poly[2] = Point(topLeft.GetX()    , bottomRight.GetY() - partY);
-	poly[3] = Point(topLeft.GetX()    , topLeft.GetY()     + partY);
+	poly.Add(new Point(bottomRight.GetX(), topLeft.GetY()     + partY));
+	poly.Add(new Point(bottomRight.GetX(), bottomRight.GetY() - partY));
+	poly.Add(new Point(topLeft.GetX()    , bottomRight.GetY() - partY));
+	poly.Add(new Point(topLeft.GetX()    , topLeft.GetY()     + partY));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Minus, CObject, 1)

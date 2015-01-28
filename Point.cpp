@@ -77,3 +77,18 @@ void Point::SetY(int y)
 {
 	m_Y = y;
 }
+
+IMPLEMENT_SERIAL(Point, CObject, 1)
+
+void Point::Serialize(CArchive& ar)
+{
+    CObject::Serialize(ar);
+    if (ar.IsStoring())
+	{
+        ar << m_X << m_Y;
+	}
+    else
+	{
+        ar >> m_X >> m_Y;
+	}
+}

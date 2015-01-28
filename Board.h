@@ -3,14 +3,17 @@
 #include "Cell.h"
 #include "Point.h"
 
+#include <afx.h>
+
 #define MATRIX_SIZE 10
 #define DEFAULT_POINT Point(0, 0)
 
-class Board
+class Board : public CObject
 {
+	DECLARE_SERIAL(Board)
 public:
 	Board(int matrixSize = MATRIX_SIZE, const Point &topLeft = DEFAULT_POINT, const Point &bottomRight = DEFAULT_POINT);
-	~Board();
+	virtual ~Board();
 
 	Board(const Board &other);
 	const Board &operator=(const Board &other);
@@ -34,6 +37,8 @@ public:
 	void Swap(int row1, int col1, int row2, int col2);
 
 	void DoExplosion(int &minCol, int &maxCol, int &maxRow);
+
+	void Serialize(CArchive& ar);
 
 private:
 	void InitData();

@@ -14,23 +14,29 @@ Shape *Sh_Plus::Clone() const
 
 void Sh_Plus::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
 	int partX = (int)((double)(bottomRight.GetX() - topLeft.GetX()) / PART_SIZE);
 	int partY = (int)((double)(bottomRight.GetY() - topLeft.GetY()) / PART_SIZE);
 
-	poly[0]  = Point(topLeft.GetX()     + partX, topLeft.GetY()            );
-	poly[1]  = Point(bottomRight.GetX() - partX, topLeft.GetY()            );
-	poly[2]  = Point(bottomRight.GetX() - partX, topLeft.GetY()     + partY);
-	poly[3]  = Point(bottomRight.GetX()        , topLeft.GetY()     + partY);
-	poly[4]  = Point(bottomRight.GetX()        , bottomRight.GetY() - partY);
-	poly[5]  = Point(bottomRight.GetX() - partX, bottomRight.GetY() - partY);
-	poly[6]  = Point(bottomRight.GetX() - partX, bottomRight.GetY()        );
-	poly[7]  = Point(topLeft.GetX()     + partX, bottomRight.GetY()        );
-	poly[8]  = Point(topLeft.GetX()     + partX, bottomRight.GetY() - partY);
-	poly[9]  = Point(topLeft.GetX()            , bottomRight.GetY() - partY);
-	poly[10] = Point(topLeft.GetX()            , topLeft.GetY()     + partY);
-	poly[11] = Point(topLeft.GetX()     + partX, topLeft.GetY()     + partY);
+	poly.Add(new Point(topLeft.GetX()     + partX, topLeft.GetY()            ));
+	poly.Add(new Point(bottomRight.GetX() - partX, topLeft.GetY()            ));
+	poly.Add(new Point(bottomRight.GetX() - partX, topLeft.GetY()     + partY));
+	poly.Add(new Point(bottomRight.GetX()        , topLeft.GetY()     + partY));
+	poly.Add(new Point(bottomRight.GetX()        , bottomRight.GetY() - partY));
+	poly.Add(new Point(bottomRight.GetX() - partX, bottomRight.GetY() - partY));
+	poly.Add(new Point(bottomRight.GetX() - partX, bottomRight.GetY()        ));
+	poly.Add(new Point(topLeft.GetX()     + partX, bottomRight.GetY()        ));
+	poly.Add(new Point(topLeft.GetX()     + partX, bottomRight.GetY() - partY));
+	poly.Add(new Point(topLeft.GetX()            , bottomRight.GetY() - partY));
+	poly.Add(new Point(topLeft.GetX()            , topLeft.GetY()     + partY));
+	poly.Add(new Point(topLeft.GetX()     + partX, topLeft.GetY()     + partY));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Plus, CObject, 1)

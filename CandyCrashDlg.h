@@ -5,6 +5,9 @@
 #pragma once
 #include "UndoRedoManager.cpp"
 #include "Board.h"
+#include "Point.h"
+#include "Cell.h"
+#include "Shape.h"
 
 // Visual definitions
 #define BOUNDARY_OUT_STROKE 20

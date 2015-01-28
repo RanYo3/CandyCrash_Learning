@@ -1,6 +1,7 @@
 #pragma once
 
 #include <WinGDI.h>
+#include <afx.h>
 
 //      Name                   R    G    B
 //      ====                  ===  ===  ===
@@ -30,8 +31,9 @@
 #define PINK_ROSE		Color(255, 102, 204)
 #define PINK_HOT		Color(255, 105, 180)
 
-class Color
+class Color : public CObject
 {
+	DECLARE_SERIAL(Color)
 public:
 	Color();
 	~Color();
@@ -46,6 +48,8 @@ public:
 	static COLORREF GetColorRef(const Color &color);
 
 	void SetRGB(int r, int g, int b);
+
+	void Serialize(CArchive& ar);
 
 private:
 	int m_R;

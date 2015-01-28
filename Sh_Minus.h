@@ -10,6 +10,7 @@
 
 class Sh_Minus : public Sh_Triangle
 {
+	DECLARE_SERIAL(Sh_Minus)
 public:
 	Sh_Minus(const Color &color = BLACK, ShapeType type = ST_Minus, int polygonSize = MINUS_SIZE);
 	Sh_Minus(const Sh_Minus &other);

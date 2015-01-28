@@ -14,12 +14,18 @@ Shape *Sh_Diamond::Clone() const
 
 void Sh_Diamond::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
-	poly[0] = Point((topLeft.GetX() + bottomRight.GetX()) / 2,  topLeft.GetY()                          );
-	poly[1] = Point( bottomRight.GetX()                      , (topLeft.GetY() + bottomRight.GetY()) / 2);
-	poly[2] = Point((topLeft.GetX() + bottomRight.GetX()) / 2,  bottomRight.GetY()                      );
-	poly[3] = Point( topLeft.GetX()                          , (topLeft.GetY() + bottomRight.GetY()) / 2);
+	poly.Add(new Point((topLeft.GetX() + bottomRight.GetX()) / 2,  topLeft.GetY()                          ));
+	poly.Add(new Point( bottomRight.GetX()                      , (topLeft.GetY() + bottomRight.GetY()) / 2));
+	poly.Add(new Point((topLeft.GetX() + bottomRight.GetX()) / 2,  bottomRight.GetY()                      ));
+	poly.Add(new Point( topLeft.GetX()                          , (topLeft.GetY() + bottomRight.GetY()) / 2));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Diamond, CObject, 1)

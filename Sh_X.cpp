@@ -14,7 +14,7 @@ Shape *Sh_X::Clone() const
 
 void Sh_X::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 	Point topLeft = GetTopLeft();
 	Point bottomRight = GetBottomRight();
 
@@ -30,16 +30,22 @@ void Sh_X::BuildPolygon()
 	int semiMiddleX = (int)((double)cellSizeX / 2 - (double)partX / 5 * 3);
 	int semiMiddleY = (int)((double)cellSizeY / 2 - (double)partY / 5 * 3);
 
-	poly[0]  = Point(topLeft.GetX()                  , topLeft.GetY()                  );
-	poly[1]  = Point(topLeft.GetX()     + partX      , topLeft.GetY()                  );
-	poly[2]  = Point(topLeft.GetX()     + middleX    , topLeft.GetY()     + semiMiddleY);
-	poly[3]  = Point(bottomRight.GetX() - partX      , topLeft.GetY()                  );
-	poly[4]  = Point(bottomRight.GetX()              , topLeft.GetY()                  );
-	poly[5]  = Point(bottomRight.GetX() - semiMiddleX, topLeft.GetY()     + middleY    );
-	poly[6]  = Point(bottomRight.GetX()              , bottomRight.GetY()              );
-	poly[7]  = Point(bottomRight.GetX() - partX      , bottomRight.GetY()              );
-	poly[8]  = Point(topLeft.GetX()     + middleX    , bottomRight.GetY() - semiMiddleY);
-	poly[9]  = Point(topLeft.GetX()     + partX      , bottomRight.GetY()              );
-	poly[10] = Point(topLeft.GetX()                  , bottomRight.GetY()              );
-	poly[11] = Point(topLeft.GetX()     + semiMiddleX, topLeft.GetY()     + middleY    );
+	poly.Add(new Point(topLeft.GetX()                  , topLeft.GetY()                  ));
+	poly.Add(new Point(topLeft.GetX()     + partX      , topLeft.GetY()                  ));
+	poly.Add(new Point(topLeft.GetX()     + middleX    , topLeft.GetY()     + semiMiddleY));
+	poly.Add(new Point(bottomRight.GetX() - partX      , topLeft.GetY()                  ));
+	poly.Add(new Point(bottomRight.GetX()              , topLeft.GetY()                  ));
+	poly.Add(new Point(bottomRight.GetX() - semiMiddleX, topLeft.GetY()     + middleY    ));
+	poly.Add(new Point(bottomRight.GetX()              , bottomRight.GetY()              ));
+	poly.Add(new Point(bottomRight.GetX() - partX      , bottomRight.GetY()              ));
+	poly.Add(new Point(topLeft.GetX()     + middleX    , bottomRight.GetY() - semiMiddleY));
+	poly.Add(new Point(topLeft.GetX()     + partX      , bottomRight.GetY()              ));
+	poly.Add(new Point(topLeft.GetX()                  , bottomRight.GetY()              ));
+	poly.Add(new Point(topLeft.GetX()     + semiMiddleX, topLeft.GetY()     + middleY    ));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_X, CObject, 1)

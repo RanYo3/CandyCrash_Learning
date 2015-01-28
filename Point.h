@@ -1,9 +1,11 @@
 #pragma once
 
 #include <atltypes.h>
+#include <afx.h>
 
-class Point
+class Point : public CObject
 {
+	DECLARE_SERIAL(Point)
 public:
 	Point();
 	~Point();
@@ -24,6 +26,8 @@ public:
 
 	void SetX(int x);
 	void SetY(int y);
+
+	void Serialize(CArchive& ar);
 
 private:
 	int m_X;

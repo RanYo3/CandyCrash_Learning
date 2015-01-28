@@ -14,8 +14,14 @@ Shape *Sh_Ellipse::Clone() const
 
 void Sh_Ellipse::BuildPolygon()
 {
-	Point *poly = GetPolygon();
+	CTypedPtrArray<CObArray, Point *> poly;
 
-	poly[0] = GetTopLeft();
-	poly[1] = GetBottomRight();
+	poly.Add(new Point(GetTopLeft()));
+	poly.Add(new Point(GetBottomRight()));
+
+	SetPolygon(poly);
+
+	DeletePolygon(poly);
 }
+
+IMPLEMENT_SERIAL(Sh_Ellipse, CObject, 1)
