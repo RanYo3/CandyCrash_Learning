@@ -43,18 +43,18 @@ public:
 
 	virtual void BuildPolygon() = 0;
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& archive);
 
 protected:
 	void SetPolygon(const CTypedPtrArray<CObArray, Point *> &srcPoly);
 
 private:
-	Color *m_Color;
+	Color m_Color;
 	ShapeType m_Type;
 
 	int m_PolygonSize;
 	CTypedPtrArray<CObArray, Point *> m_Polygon;
 
-	Point *m_TopLeft;
-	Point *m_BottomRight;
+	Point m_TopLeft;
+	Point m_BottomRight;
 };

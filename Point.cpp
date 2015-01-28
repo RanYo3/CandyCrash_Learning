@@ -80,15 +80,21 @@ void Point::SetY(int y)
 
 IMPLEMENT_SERIAL(Point, CObject, 1)
 
-void Point::Serialize(CArchive& ar)
+void Point::Serialize( CArchive& archive )
 {
-    CObject::Serialize(ar);
-    if (ar.IsStoring())
+	// call base class function first
+    // base class is CObject in this case
+    CObject::Serialize( archive );
+
+    // now do the stuff for our specific class
+    if( archive.IsStoring() )
 	{
-        ar << m_X << m_Y;
+        archive << m_X;
+		archive << m_Y;
 	}
     else
 	{
-        ar >> m_X >> m_Y;
+        archive >> m_X;
+		archive >> m_Y;
 	}
 }

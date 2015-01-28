@@ -38,7 +38,7 @@ public:
 
 	void DoExplosion(int &minCol, int &maxCol, int &maxRow);
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& archive);
 
 private:
 	void InitData();

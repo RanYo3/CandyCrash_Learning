@@ -2,11 +2,8 @@
 #include "Cell.h"
 
 Cell::Cell()
-	: m_Shape(NULL), m_IsSelected(false), m_IsInSequence(false)
-{
-	m_TopLeft = new Point();
-	m_BottomRight = new Point();
-}
+	: m_Shape(NULL), m_TopLeft(), m_BottomRight(),  m_IsSelected(false), m_IsInSequence(false)
+{ }
 
 Cell::~Cell()
 {
@@ -14,28 +11,17 @@ Cell::~Cell()
 	{
 		delete m_Shape;
 	}
-	if (m_TopLeft != NULL)
-	{
-		delete m_TopLeft;
-	}
-	if (m_BottomRight != NULL)
-	{
-		delete m_BottomRight;
-	}
 }
 
 Cell::Cell(Shape *shape, const Point &topLeft, const Point &bottomRight)
-	: m_Shape(shape), m_IsSelected(false), m_IsInSequence(false)
-{
-	m_TopLeft     = new Point(topLeft);
-	m_BottomRight = new Point(bottomRight);
-}
+	: m_Shape(shape), m_TopLeft(topLeft), m_BottomRight(bottomRight), m_IsSelected(false), m_IsInSequence(false)
+{ }
 
 Cell::Cell(const Cell &other)
 {
 	m_Shape = other.m_Shape->Clone();
-	m_TopLeft = new Point(*other.m_TopLeft);
-	m_BottomRight = new Point(*other.m_BottomRight);
+	m_TopLeft = other.m_TopLeft;
+	m_BottomRight = other.m_BottomRight;
 	m_IsSelected = false;
 	m_IsInSequence = false;
 }
@@ -48,17 +34,9 @@ const Cell &Cell::operator=(const Cell &other)
 		{
 			delete m_Shape;
 		}
-		if (m_TopLeft != NULL)
-		{
-			delete m_TopLeft;
-		}
-		if (m_BottomRight != NULL)
-		{
-			delete m_BottomRight;
-		}
 		m_Shape = other.m_Shape->Clone();
-		m_TopLeft = new Point(*other.m_TopLeft);
-		m_BottomRight = new Point(*other.m_BottomRight);
+		m_TopLeft = other.m_TopLeft;
+		m_BottomRight = other.m_BottomRight;
 		m_IsSelected = false;
 		m_IsInSequence = false;
 	}
@@ -73,12 +51,12 @@ Shape *Cell::GetShape() const
 
 const Point &Cell::GetTopLeft() const
 {
-	return *m_TopLeft;
+	return m_TopLeft;
 }
 
 const Point &Cell::GetBottomRight() const
 {
-	return *m_BottomRight;
+	return m_BottomRight;
 }
 
 bool Cell::IsSelected() const
@@ -102,20 +80,12 @@ bool Cell::IsInSequence() const
 
 void Cell::SetTopLeft(const Point &topLeft)
 {
-	if (m_TopLeft != NULL)
-	{
-		delete m_TopLeft;
-	}
-	m_TopLeft = new Point(topLeft);
+	m_TopLeft = topLeft;
 }
 
 void Cell::SetBottomRight(const Point &bottomRight)
 {
-	if (m_BottomRight != NULL)
-	{
-		delete m_BottomRight;
-	}
-	m_BottomRight = new Point(bottomRight);
+	m_BottomRight = bottomRight;
 }
 
 void Cell::Select(bool isSelected)
@@ -130,22 +100,23 @@ void Cell::MarkAsSequence()
 
 IMPLEMENT_SERIAL(Cell, CObject, 1)
 
-void Cell::Serialize(CArchive& ar)
+void Cell::Serialize(CArchive& archive)
 {
-	CObject::Serialize(ar);
-	if (ar.IsStoring())
+	CObject::Serialize(archive);
+
+	if( archive.IsStoring() )
 	{
-		ar << m_TopLeft;
-		ar << m_BottomRight;
-		ar << m_IsSelected;
-		ar << m_IsInSequence;
+		archive << m_IsSelected;
+		archive << m_IsInSequence;
 	}
 	else
 	{
-		ar >> m_TopLeft;
-		ar >> m_BottomRight;
-		ar >> m_IsSelected;
-		ar >> m_IsInSequence;
+		archive >> m_IsSelected;
+		archive >> m_IsInSequence;
 	}
-	m_Shape->Serialize(ar);
+
+	m_TopLeft.Serialize(archive);
+	m_BottomRight.Serialize(archive);
+
+	m_Shape->Serialize(archive);
 }

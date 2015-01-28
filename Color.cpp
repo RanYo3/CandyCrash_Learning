@@ -61,15 +61,23 @@ void Color::SetRGB(int r, int g, int b)
 
 IMPLEMENT_SERIAL(Color, CObject, 1)
 
-void Color::Serialize(CArchive& ar)
+void Color::Serialize( CArchive& archive )
 {
-    CObject::Serialize(ar);
-    if (ar.IsStoring())
+	 // call base class function first
+    // base class is CObject in this case
+    CObject::Serialize( archive );
+
+    // now do the stuff for our specific class
+    if( archive.IsStoring() )
 	{
-        ar << m_R << m_G << m_B;
+        archive << m_R;
+		archive << m_G;
+		archive << m_B;
 	}
     else
 	{
-        ar >> m_R >> m_G >> m_B;
+        archive >> m_R;
+		archive >> m_G;
+		archive >> m_B;
 	}
 }

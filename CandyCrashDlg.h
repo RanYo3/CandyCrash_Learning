@@ -67,4 +67,8 @@ public:
 	CButton m_RedoBtn;
 	afx_msg void OnClickedRedoBtn();
 	afx_msg void OnClickedUndoBtn();
+	CButton m_SaveBtn;
+	CButton m_LoadBtn;
+	afx_msg void OnClickedLoadBtn();
+	afx_msg void OnClickedSaveBtn();
 };

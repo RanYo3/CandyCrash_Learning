@@ -27,7 +27,7 @@ public:
 	void SetX(int x);
 	void SetY(int y);
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& archive);
 
 private:
 	int m_X;

@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Sh_Diamond.h"
 
-Sh_Diamond::Sh_Diamond(const Color &color, ShapeType type, int polygonSize) 
+IMPLEMENT_SERIAL(Sh_Diamond, CObject, 1)
+
+Sh_Diamond::Sh_Diamond(const Color &color, ShapeType type, int polygonSize)
 	: Sh_Rectangle(color, type, polygonSize) { }
 
 Sh_Diamond::Sh_Diamond(const Sh_Diamond &other)
@@ -27,5 +29,3 @@ void Sh_Diamond::BuildPolygon()
 
 	DeletePolygon(poly);
 }
-
-IMPLEMENT_SERIAL(Sh_Diamond, CObject, 1)

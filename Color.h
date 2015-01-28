@@ -49,7 +49,7 @@ public:
 
 	void SetRGB(int r, int g, int b);
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& archive);
 
 private:
 	int m_R;

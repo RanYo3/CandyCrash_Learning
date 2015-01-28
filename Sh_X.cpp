@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Sh_X.h"
 
-Sh_X::Sh_X(const Color &color, ShapeType type, int polygonSize) 
+IMPLEMENT_SERIAL(Sh_X, CObject, 1)
+
+Sh_X::Sh_X(const Color &color, ShapeType type, int polygonSize)
 	: Sh_Plus(color, type, polygonSize) { }
 
 Sh_X::Sh_X(const Sh_X &other)
@@ -47,5 +49,3 @@ void Sh_X::BuildPolygon()
 
 	DeletePolygon(poly);
 }
-
-IMPLEMENT_SERIAL(Sh_X, CObject, 1)

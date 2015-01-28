@@ -32,12 +32,12 @@ public:
 	void Select(bool isSelected);
 	void MarkAsSequence();
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& archive);
 
 private:
 	Shape *m_Shape;
-	Point *m_TopLeft;
-	Point *m_BottomRight;
+	Point m_TopLeft;
+	Point m_BottomRight;
 	bool m_IsSelected;
 	bool m_IsInSequence;
 };
