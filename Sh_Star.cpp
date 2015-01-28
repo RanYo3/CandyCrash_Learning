@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sh_Star.h"
 
+IMPLEMENT_SERIAL(Sh_Star, CObject, 1)
+
 Sh_Star::Sh_Star(Color color, ShapeType type, int polygonSize) 
 	: Sh_X(color, type, polygonSize) { }
 

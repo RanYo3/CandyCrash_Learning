@@ -9,6 +9,8 @@
 
 class Sh_Rectangle : public Sh_Ellipse
 {
+	DECLARE_SERIAL (Sh_Rectangle)
+
 public:
 	Sh_Rectangle(Color color = BLACK, ShapeType type = ST_Rectangle, int polygonSize = RECT_SIZE);
 	Sh_Rectangle(const Sh_Rectangle &other);

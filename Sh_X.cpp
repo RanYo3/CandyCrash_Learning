@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sh_X.h"
 
+IMPLEMENT_SERIAL(Sh_X, CObject, 1)
+
 Sh_X::Sh_X(Color color, ShapeType type, int polygonSize) 
 	: Sh_Plus(color, type, polygonSize) { }
 

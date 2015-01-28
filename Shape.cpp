@@ -90,6 +90,40 @@ void Shape::SetBottomRight(const Point &bottomRight)
 	m_BottomRight = bottomRight;
 }
 
+void Shape::Serialize( CArchive& archive )
+{
+    // call base class function first
+    // base class is CObject in this case
+    CObject::Serialize(archive);
+	
+    // now do the stuff for our specific class
+
+    if(archive.IsStoring())
+	{
+		int type = (int)m_Type;
+        archive << type;
+		archive << m_PolygonSize;
+	}
+
+    else
+	{
+		int type;
+        archive >> type;
+		archive >> m_PolygonSize;
+		m_Type = (ShapeType) type;
+	}
+	
+
+	m_TopLeft.Serialize(archive);
+	m_BottomRight.Serialize(archive);
+	m_Color.Serialize(archive);
+
+	for (int i = 0; i < m_PolygonSize; i++)
+	{
+		m_Polygon[i].Serialize(archive);
+	}
+}
+
 void Shape::SetColor(const Color &color)
 {
 	m_Color = color;

@@ -215,6 +215,44 @@ void Board::DoExplosion(int &minCol, int &maxCol, int &maxRow)
 	}
 }
 
+IMPLEMENT_SERIAL( Board, CObject, 1 )
+void Board::Serialize(CArchive& archive)
+{
+	CObject::Serialize(archive);
+
+	if(archive.IsStoring())
+	{
+		archive << m_Rows;
+		archive << m_Cols;
+		archive << m_CellSizeX;
+		archive << m_CellSizeY;
+	}
+	else
+	{
+		archive >> m_Rows;
+		archive >> m_Cols;
+		archive >> m_CellSizeX;
+		archive >> m_CellSizeY;
+	}
+
+	m_TopLeft.Serialize(archive);
+	m_BottomRight.Serialize(archive);
+	
+	for (int i = 0; i < NUM_OF_SHAPES; i++)
+	{
+		m_ShapesCollection[i]->Serialize(archive);
+	}
+	
+	for (int row = 0; row < m_Rows; row++)
+	{
+		for (int col = 0; col < m_Cols; col++)
+		{
+			m_Matrix[row][col]->Serialize(archive);
+		}
+	}
+	
+}
+
 void Board::InitData()
 {
 	InitCellSize();

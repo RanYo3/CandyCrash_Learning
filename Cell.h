@@ -5,8 +5,9 @@
 
 #define MARGIN 10
 
-class Cell
+class Cell : public CObject
 {
+	DECLARE_SERIAL (Cell)
 public:
 	Cell();
 	~Cell();
@@ -28,6 +29,8 @@ public:
 
 	void Select(bool isSelected);
 	void MarkAsSequence();
+
+	void Serialize(CArchive& archive);
 
 private:
 	Shape *m_Shape;

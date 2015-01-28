@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sh_Triangle.h"
 
+IMPLEMENT_SERIAL(Sh_Triangle, CObject, 1)
+
 Sh_Triangle::Sh_Triangle(Color color, ShapeType type, int polygonSize) 
 	: Sh_Diamond(color, type, polygonSize) { }
 

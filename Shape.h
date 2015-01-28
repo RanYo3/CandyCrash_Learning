@@ -8,7 +8,7 @@
 
 enum ShapeType { ST_Rectangle, ST_Ellipse, ST_Triangle, ST_Diamond, ST_Plus, ST_Minus, ST_Star, ST_X, ST_Unknown };
 
-class Shape
+class Shape : public CObject
 {
 public:
 	Shape(Color color = BLACK, ShapeType type = ST_Unknown, int polygonSize = 0);
@@ -29,6 +29,7 @@ public:
 	void SetColor(const Color &color);
 	void SetTopLeft(const Point &topLeft);
 	void SetBottomRight(const Point &bottomRight);
+	void Serialize(CArchive& archive);
 
 	int GetPolygonSize() const;
 

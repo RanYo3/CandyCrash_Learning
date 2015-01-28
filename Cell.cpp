@@ -91,3 +91,25 @@ void Cell::MarkAsSequence()
 {
 	m_IsInSequence = true;
 }
+
+IMPLEMENT_SERIAL(Cell, CObject, 1)
+void Cell::Serialize(CArchive& archive)
+{
+	CObject::Serialize(archive);
+
+	if( archive.IsStoring() )
+	{
+		archive << m_IsSelected;
+		archive << m_IsInSequence;
+	}
+	else
+	{
+		archive >> m_IsSelected;
+		archive >> m_IsInSequence;
+	}
+
+	m_TopLeft.Serialize(archive);
+	m_BottomRight.Serialize(archive);
+
+	m_Shape->Serialize(archive);
+}

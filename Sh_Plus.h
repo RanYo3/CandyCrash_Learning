@@ -10,6 +10,8 @@
 
 class Sh_Plus : public Sh_Minus
 {
+	DECLARE_SERIAL (Sh_Plus)
+
 public:
 	Sh_Plus(Color color = BLACK, ShapeType type = ST_Plus, int polygonSize = PLUS_SIZE);
 	Sh_Plus(const Sh_Plus &other);

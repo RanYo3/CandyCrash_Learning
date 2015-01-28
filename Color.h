@@ -30,8 +30,9 @@
 #define PINK_ROSE		Color(255, 102, 204)
 #define PINK_HOT		Color(255, 105, 180)
 
-class Color
+class Color : public CObject
 {
+	DECLARE_SERIAL (Color)
 public:
 	Color();
 	~Color();
@@ -46,6 +47,8 @@ public:
 	static COLORREF GetColorRef(const Color &color);
 
 	void SetRGB(int r, int g, int b);
+
+	void Serialize(CArchive& archive);
 
 private:
 	int m_R;

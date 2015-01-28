@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sh_Ellipse.h"
 
+IMPLEMENT_SERIAL(Sh_Ellipse, CObject, 1)
+
 Sh_Ellipse::Sh_Ellipse(Color color, ShapeType type, int polygonSize) 
 	: Shape(color, type, polygonSize) { }
 

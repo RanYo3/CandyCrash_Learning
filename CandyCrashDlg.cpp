@@ -98,6 +98,8 @@ void CCandyCrashDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_UndoBtn, m_UndoBtn);
 	DDX_Control(pDX, IDC_RedoBtn, m_RedoBtn);
+	DDX_Control(pDX, IDC_SaveBtn, m_SaveBtn);
+	DDX_Control(pDX, IDC_LoadBtn, m_LoadBtn);
 }
 
 BEGIN_MESSAGE_MAP(CCandyCrashDlg, CDialogEx)
@@ -107,6 +109,8 @@ BEGIN_MESSAGE_MAP(CCandyCrashDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_BN_CLICKED(IDC_RedoBtn, &CCandyCrashDlg::OnClickedRedoBtn)
 	ON_BN_CLICKED(IDC_UndoBtn, &CCandyCrashDlg::OnClickedUndoBtn)
+	ON_BN_CLICKED(IDC_LoadBtn, &CCandyCrashDlg::OnClickedLoadBtn)
+	ON_BN_CLICKED(IDC_SaveBtn, &CCandyCrashDlg::OnClickedSaveBtn)
 END_MESSAGE_MAP()
 
 
@@ -145,10 +149,16 @@ BOOL CCandyCrashDlg::OnInitDialog()
 
 	CImage UndoIMG;
 	CImage RedoIMG;
+	CImage SaveImg;
+	CImage LoadIMG;
 	UndoIMG.Load( _T("edit_undo.png"));
-	RedoIMG.Load( _T("edit_redo.png"));
 	m_UndoBtn.SetBitmap(UndoIMG);
+	RedoIMG.Load( _T("edit_redo.png"));
 	m_RedoBtn.SetBitmap(RedoIMG);
+	SaveImg.Load( _T("save.png"));
+	m_SaveBtn.SetBitmap(SaveImg);
+	LoadIMG.Load( _T("open_folder.png"));
+	m_LoadBtn.SetBitmap(LoadIMG);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -169,7 +179,7 @@ void CCandyCrashDlg::OnSysCommand(UINT nID, LPARAM lParam)
 void CCandyCrashDlg::PaintShape(Shape *shape, CPaintDC &dc) const
 {
 	Point *_poly      = shape->GetPolygon();
-	ShapeType sh_type = shape->GetType();
+	int sh_type = shape->GetType();
 	
 	CBrush shapeClr(Color::GetColorRef(shape->GetColor()));
 	CBrush *oldBrush = dc.SelectObject(&shapeClr);
@@ -395,3 +405,33 @@ void CCandyCrashDlg::OnClickedUndoBtn()
 	}
 }
 
+void CCandyCrashDlg::OnClickedSaveBtn()
+{
+	CFile theFile;
+
+	theFile.Open(_T("CC_Game"), CFile::modeCreate | CFile::modeWrite);
+
+	CArchive archive(&theFile, CArchive::store);
+
+	archive << m_Board;
+
+	archive.Close();
+	theFile.Close();
+}
+
+void CCandyCrashDlg::OnClickedLoadBtn()
+{
+	CFile theFile;
+	if (PathFileExists( _T("CC_Game")))
+	{
+		theFile.Open(_T("CC_Game"), CFile::modeRead);
+		CArchive archive(&theFile, CArchive::load);
+
+		archive >> m_Board;
+
+		archive.Close();
+		theFile.Close();
+
+		Invalidate();
+	}
+}

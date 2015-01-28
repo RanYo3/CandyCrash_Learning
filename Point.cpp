@@ -77,3 +77,23 @@ void Point::SetY(int y)
 {
 	m_Y = y;
 }
+
+IMPLEMENT_SERIAL( Point, CObject, 1 )
+void Point::Serialize( CArchive& archive )
+{
+	// call base class function first
+    // base class is CObject in this case
+    CObject::Serialize( archive );
+
+    // now do the stuff for our specific class
+    if( archive.IsStoring() )
+	{
+        archive << m_X;
+		archive << m_Y;
+	}
+    else
+	{
+        archive >> m_X;
+		archive >> m_Y;
+	}
+}
